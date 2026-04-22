@@ -6,6 +6,10 @@
     "directory": "./public",
     "not_found_handling": "single-page-application"
   },
+  "routes": [
+    { "pattern": "skystone.co", "custom_domain": true },
+    { "pattern": "www.skystone.co", "custom_domain": true }
+  ],
   "observability": {
     "enabled": true
   }
