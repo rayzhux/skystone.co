@@ -1,0 +1,13 @@
+{
+  "name": "skystone.co",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Skystone Partners — private real estate advisory (Dubai). Static site deployed on Cloudflare Workers.",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy"
+  },
+  "devDependencies": {
+    "wrangler": "^4.0.0"
+  }
+}

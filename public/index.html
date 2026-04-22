@@ -8,15 +8,15 @@
   <meta name="theme-color" content="#0E0D08" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link rel="preconnect" href="https://images.unsplash.com" />
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif&family=Inter+Tight:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="preload" as="image" href="/images/hero-shanghai-bund.jpg" fetchpriority="high" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
 
 <!-- =============== HERO =============== -->
 <section class="hero">
-  <img class="hero-photo" src="https://images.unsplash.com/photo-1545893835-abaa50cbe628?w=2400&q=80&auto=format&fit=crop" alt="The Bund, Shanghai, at dusk" />
+  <img class="hero-photo" src="/images/hero-shanghai-bund.jpg" alt="The Bund, Shanghai, at dusk" fetchpriority="high" decoding="async" />
   <div class="hero-overlay-1"></div>
   <div class="hero-overlay-2"></div>
 
@@ -99,7 +99,7 @@
 
   <div class="pullquote grid-12">
     <figure class="pullquote-plate">
-      <img src="https://images.unsplash.com/photo-1548919973-5cef591cdbc9?w=1600&q=80&auto=format&fit=crop" alt="Shanghai aerial at golden hour" />
+      <img src="/images/shanghai-aerial.jpg" alt="Shanghai aerial at golden hour" loading="lazy" decoding="async" />
       <figcaption>Plate 02 · Shanghai, from the heights</figcaption>
     </figure>
     <div class="pullquote-body">
@@ -146,7 +146,7 @@
 
 <!-- =============== IMAGE BAND — Great Wall =============== -->
 <section class="band" aria-label="Plate III">
-  <img src="https://images.unsplash.com/photo-1524413840807-0c3cb6fa808d?w=1800&q=80&auto=format&fit=crop" alt="Great Wall of China in autumn" />
+  <img src="/images/great-wall-autumn.jpg" alt="Great Wall of China in autumn" loading="lazy" decoding="async" />
   <div class="band-overlay"></div>
   <div class="band-plate">
     <span class="band-stroke"></span>
@@ -292,7 +292,7 @@
 
 <!-- =============== PORTAL — New York =============== -->
 <section class="portal" aria-label="Plate VII">
-  <img src="https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=1800&q=80&auto=format&fit=crop" alt="New York skyline at dusk" />
+  <img src="/images/new-york-dusk.jpg" alt="New York skyline at dusk" loading="lazy" decoding="async" />
   <div class="portal-overlay"></div>
   <div class="portal-plate">
     <span class="portal-stroke"></span>
