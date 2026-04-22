@@ -6,11 +6,10 @@
     "directory": "./public",
     "not_found_handling": "single-page-application"
   },
-  "routes": [
-    { "pattern": "skystone.co", "custom_domain": true },
-    { "pattern": "www.skystone.co", "custom_domain": true }
-  ],
   "observability": {
     "enabled": true
   }
+  // Custom domains skystone.co + www.skystone.co are attached via the
+  // Workers Domains API (account-scoped) rather than `routes` here, since
+  // the CI API token lacks Zone → Workers Routes edit permission.
 }
