@@ -1002,45 +1002,42 @@ em { font-style: italic; }
   color: var(--mute-paper);
 }
 
-/* Hero headline — words rise through blur on load */
+/* Hero headline — words rise on load (content always visible) */
 .hero-headline h1 .word {
   display: inline-block;
-  opacity: 0;
-  transform: translateY(28px);
-  filter: blur(6px);
+  transform: translateY(24px);
   animation: wordRise 1100ms var(--ease-out-expo) forwards;
-  will-change: transform, opacity, filter;
+  will-change: transform;
 }
 .hero-headline h1 .word:nth-child(1) { animation-delay: 200ms; }
 .hero-headline h1 .word:nth-child(2) { animation-delay: 380ms; }
 .hero-headline h1 .word:nth-child(4) { animation-delay: 560ms; }
 
 @keyframes wordRise {
-  0%   { opacity: 0; transform: translateY(28px); filter: blur(6px); }
-  55%  { filter: blur(0); }
-  100% { opacity: 1; transform: translateY(0); filter: blur(0); }
+  from { transform: translateY(24px); }
+  to   { transform: translateY(0); }
 }
 
-/* Hero apparatus — fade in around the headline */
+/* Hero apparatus — settle in around the headline (always visible) */
 .nav,
 .hero-rule,
 .hero-eyebrow,
 .hero-coordinates,
 .hero-lower,
 .hero-bottom-bar {
-  opacity: 0;
-  animation: heroFade 1200ms var(--ease-out-quart) forwards;
+  transform: translateY(10px);
+  animation: heroFade 1000ms var(--ease-out-quart) forwards;
 }
 .nav              { animation-delay: 100ms; }
 .hero-rule        { animation-delay: 300ms; }
 .hero-eyebrow     { animation-delay: 340ms; }
 .hero-coordinates { animation-delay: 420ms; }
-.hero-lower       { animation-delay: 900ms; }
-.hero-bottom-bar  { animation-delay: 1100ms; }
+.hero-lower       { animation-delay: 700ms; }
+.hero-bottom-bar  { animation-delay: 900ms; }
 
 @keyframes heroFade {
-  from { opacity: 0; transform: translateY(12px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from { transform: translateY(10px); }
+  to   { transform: translateY(0); }
 }
 
 /* Scroll-driven reveals — CSS-only, gracefully absent on older browsers */
