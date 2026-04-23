@@ -986,7 +986,406 @@ em { font-style: italic; }
   .footer-colophon { margin-top: 24px; gap: 10px; font-size: 9px; }
 }
 
-/* Reduce motion */
+/* =============== CRAFT & MOTION =============== */
+
+:root {
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-out-expo: cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+/* Managing director sign-off — editorial colophon mark */
+.commitment-paragraphs .signature {
+  grid-column: 1 / -1;
+  margin: 8px 0 0;
+  padding-top: 24px;
+  border-top: 1px solid var(--rule-paper);
+  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  text-align: right;
+  color: var(--mute-paper);
+}
+
+/* Hero headline — words rise through blur on load */
+.hero-headline h1 .word {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(28px);
+  filter: blur(6px);
+  animation: wordRise 1100ms var(--ease-out-expo) forwards;
+  will-change: transform, opacity, filter;
+}
+.hero-headline h1 .word:nth-child(1) { animation-delay: 200ms; }
+.hero-headline h1 .word:nth-child(2) { animation-delay: 380ms; }
+.hero-headline h1 .word:nth-child(4) { animation-delay: 560ms; }
+
+@keyframes wordRise {
+  0%   { opacity: 0; transform: translateY(28px); filter: blur(6px); }
+  55%  { filter: blur(0); }
+  100% { opacity: 1; transform: translateY(0); filter: blur(0); }
+}
+
+/* Hero apparatus — fade in around the headline */
+.nav,
+.hero-rule,
+.hero-eyebrow,
+.hero-coordinates,
+.hero-lower,
+.hero-bottom-bar {
+  opacity: 0;
+  animation: heroFade 1200ms var(--ease-out-quart) forwards;
+}
+.nav              { animation-delay: 100ms; }
+.hero-rule        { animation-delay: 300ms; }
+.hero-eyebrow     { animation-delay: 340ms; }
+.hero-coordinates { animation-delay: 420ms; }
+.hero-lower       { animation-delay: 900ms; }
+.hero-bottom-bar  { animation-delay: 1100ms; }
+
+@keyframes heroFade {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Scroll-driven reveals — CSS-only, gracefully absent on older browsers */
+@supports (animation-timeline: view()) {
+  .commitment-body,
+  .services-head,
+  .services-grid .service,
+  .process-head,
+  .process-grid .stage,
+  .recognition-head,
+  .portal-body,
+  .contact-invitation,
+  .contact-details {
+    animation: riseIn linear both;
+    animation-timeline: view();
+    animation-range: entry 0% entry 55%;
+  }
+
+  .hero-photo {
+    animation: heroParallax linear both;
+    animation-timeline: scroll(root);
+    animation-range: 0 100vh;
+  }
+
+  .band img,
+  .portal img {
+    animation: imageDrift linear both;
+    animation-timeline: view();
+    animation-range: cover 0% cover 100%;
+  }
+
+  /* Per-card stagger — ripples within each grid row */
+  .services-grid .service:nth-child(even) { animation-range: entry 7% entry 57%; }
+  .process-grid .stage:nth-child(2)       { animation-range: entry 6% entry 56%; }
+  .process-grid .stage:nth-child(3)       { animation-range: entry 12% entry 62%; }
+  .process-grid .stage:nth-child(4)       { animation-range: entry 18% entry 68%; }
+}
+
+@keyframes riseIn {
+  from { opacity: 0; transform: translateY(36px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes heroParallax {
+  from { transform: scale(1.02); filter: brightness(1); }
+  to   { transform: scale(1.10) translateY(-30px); filter: brightness(0.7); }
+}
+
+@keyframes imageDrift {
+  from { transform: scale(1.04) translateY(-1.5%); }
+  to   { transform: scale(1.08) translateY(1.5%); }
+}
+
+/* Service cards — ochre rule draws across on hover */
+.service {
+  position: relative;
+  transition: transform 320ms var(--ease-out-quart),
+              opacity 420ms var(--ease-out-quart);
+}
+.service::before {
+  content: "";
+  position: absolute;
+  left: 0; top: 0;
+  width: 0;
+  height: 1px;
+  background: var(--ochre);
+  transition: width 520ms var(--ease-out-expo);
+  pointer-events: none;
+}
+.service:hover::before { width: 100%; }
+.service-n {
+  transition: color 320ms var(--ease-out-quart),
+              transform 320ms var(--ease-out-quart);
+}
+.service:hover .service-n {
+  color: var(--ochre);
+  transform: translateX(3px);
+}
+
+/* Process stages — same treatment on dark */
+.stage {
+  position: relative;
+  transition: transform 320ms var(--ease-out-quart),
+              opacity 420ms var(--ease-out-quart);
+}
+.stage::before {
+  content: "";
+  position: absolute;
+  left: 0; top: 0;
+  width: 0;
+  height: 1px;
+  background: var(--ochre);
+  transition: width 520ms var(--ease-out-expo);
+  pointer-events: none;
+}
+.stage:hover::before { width: 100%; }
+.stage-n { transition: color 320ms var(--ease-out-quart); }
+.stage:hover .stage-n { color: var(--ochre); }
+
+/* CTA pill — letter-spacing opens, arrow drifts */
+.cta-pill {
+  transition: letter-spacing 360ms var(--ease-out-quart),
+              border-color 320ms var(--ease-out-quart),
+              background-color 320ms var(--ease-out-quart),
+              color 320ms var(--ease-out-quart),
+              transform 420ms var(--ease-out-expo);
+}
+.cta-pill:hover {
+  letter-spacing: 0.06em;
+  transform: translateY(-1px);
+}
+.cta-pill-dot {
+  display: inline-block;
+  transition: transform 420ms var(--ease-out-expo);
+}
+.cta-pill:hover .cta-pill-dot { transform: translateY(3px); }
+
+/* CTA solid — arrow slides on hover */
+.cta-solid {
+  transition: letter-spacing 360ms var(--ease-out-quart),
+              background-color 320ms var(--ease-out-quart),
+              color 320ms var(--ease-out-quart);
+}
+.cta-solid:hover { letter-spacing: 0.04em; }
+.cta-solid span[aria-hidden] {
+  display: inline-block;
+  transition: transform 420ms var(--ease-out-expo);
+}
+.cta-solid:hover span[aria-hidden] { transform: translateX(6px); }
+
+/* Nav links — ochre underline draws from right on hover */
+.nav-links a {
+  position: relative;
+  padding-bottom: 4px;
+}
+.nav-links a::after {
+  content: "";
+  position: absolute;
+  left: 0; bottom: 0;
+  width: 100%;
+  height: 1px;
+  background: var(--ochre);
+  transform: scaleX(0);
+  transform-origin: right center;
+  transition: transform 520ms var(--ease-out-expo);
+}
+.nav-links a:hover::after {
+  transform: scaleX(1);
+  transform-origin: left center;
+}
+
+/* Contact email — ochre settle on hover */
+.contact-email { transition: color 320ms var(--ease-out-quart); }
+.contact-email:hover { color: var(--ochre); }
+
+/* Nav status dot — slow editorial pulse */
+.nav-status-dot { position: relative; }
+.nav-status-dot::after {
+  content: "";
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 1px solid var(--ochre);
+  opacity: 0;
+  animation: dotPulse 2800ms var(--ease-out-expo) infinite;
+  pointer-events: none;
+}
+@keyframes dotPulse {
+  0%   { transform: scale(0.6); opacity: 0.55; }
+  100% { transform: scale(1.9); opacity: 0; }
+}
+
+/* =============== POLISH =============== */
+
+/* Smooth anchor scrolling */
+html { scroll-behavior: smooth; }
 @media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+}
+
+/* Editorial line balancing — headlines balance, prose wraps prettily */
+h1, h2, h3,
+.display,
+.services-title,
+.process-title,
+.stats-lede,
+.recognition-lede,
+.portal-title,
+.hero-sub {
+  text-wrap: balance;
+}
+.commitment-paragraphs p,
+.service-body p,
+.stage p,
+.contact-invitation p,
+.band-caption {
+  text-wrap: pretty;
+}
+
+/* Tabular numerics — figures align vertically across rows */
+.service-n, .stage-n,
+.hero-coordinates,
+.hero-bottom-bar,
+.footer-colophon,
+.contact-row dd {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Text selection — ochre */
+::selection      { background: var(--ochre); color: var(--ink-dark); text-shadow: none; }
+::-moz-selection { background: var(--ochre); color: var(--ink-dark); text-shadow: none; }
+
+/* Focus-visible — ochre ring honoring the editorial tone */
+a:focus-visible,
+button:focus-visible,
+.cta-pill:focus-visible,
+.cta-solid:focus-visible,
+.nav-burger:focus-visible {
+  outline: 2px solid var(--ochre);
+  outline-offset: 4px;
+  border-radius: 1px;
+}
+
+/* Scroll progress — hairline ochre at page top, CSS-only */
+body::before {
+  content: "";
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: var(--ochre);
+  transform: scaleX(0);
+  transform-origin: left center;
+  z-index: 10000;
+  pointer-events: none;
+  opacity: 0.6;
+}
+@supports (animation-timeline: scroll()) {
+  body::before {
+    animation: scrollProgress linear both;
+    animation-timeline: scroll(root);
+  }
+}
+@keyframes scrollProgress {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+
+/* Image load fade — prevents pop-in when decode completes */
+.band img,
+.portal img,
+.hero-photo {
+  opacity: 1;
+  transition: opacity 600ms var(--ease-out-quart);
+}
+img[loading="lazy"] {
+  animation: imgFade 600ms var(--ease-out-quart) both;
+}
+@keyframes imgFade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* Print — clean, paper-ready */
+@media print {
+  body::before, body::after { display: none; }
+  .hero, .band, .portal, .recognition, .marquee { page-break-inside: avoid; }
+  .hero-photo, .band img, .portal img { filter: none; }
+  * { color-adjust: exact; -webkit-print-color-adjust: exact; }
+}
+
+/* Sibling dim — when focusing one card, others retreat */
+.services-grid:hover .service:not(:hover),
+.services-grid:focus-within .service:not(:hover):not(:focus-within) {
+  opacity: 0.5;
+}
+.process-grid:hover .stage:not(:hover),
+.process-grid:focus-within .stage:not(:hover):not(:focus-within) {
+  opacity: 0.5;
+}
+
+/* Partner logos — ochre settle on hover */
+.logo {
+  transition: color 320ms var(--ease-out-quart),
+              transform 420ms var(--ease-out-expo);
+}
+.logo-initials {
+  transition: color 320ms var(--ease-out-quart),
+              border-color 320ms var(--ease-out-quart);
+}
+.logo:hover { color: var(--ochre); }
+.logo:hover .logo-initials { color: var(--ochre); border-color: var(--ochre); }
+
+/* Dropcap — ink-bleed feel with the ochre-deep accent */
+.dropcap {
+  transition: color 520ms var(--ease-out-quart);
+}
+.commitment-paragraphs p:hover .dropcap {
+  color: var(--ochre);
+}
+
+/* Hero rule — draws from the left on load */
+.hero-rule {
+  transform: scaleX(0);
+  transform-origin: left center;
+  animation: ruleDraw 1200ms var(--ease-out-expo) 500ms forwards;
+}
+@keyframes ruleDraw {
+  from { transform: scaleX(0); opacity: 0; }
+  to   { transform: scaleX(1); opacity: 1; }
+}
+
+/* Reduced motion — honor the preference across every new animation */
+@media (prefers-reduced-motion: reduce) {
+  body::before { display: none; }
+  .hero-rule { transform: none !important; animation: none !important; opacity: 1 !important; }
+  .services-grid:hover .service:not(:hover),
+  .process-grid:hover .stage:not(:hover) { opacity: 1; }
+  .hero-headline h1 .word,
+  .nav, .hero-rule, .hero-eyebrow, .hero-coordinates, .hero-lower, .hero-bottom-bar,
+  .hero-photo,
+  .commitment-body,
+  .services-head, .services-grid .service,
+  .process-head, .process-grid .stage,
+  .recognition-head,
+  .portal-body,
+  .contact-invitation, .contact-details,
+  .band img, .portal img {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+  }
+  .nav-status-dot::after { animation: none; }
   .marquee-track { animation: none; }
+  .service::before, .stage::before,
+  .cta-pill, .cta-pill-dot,
+  .cta-solid, .cta-solid span[aria-hidden],
+  .nav-links a::after,
+  .service-n, .stage-n,
+  .contact-email {
+    transition: none !important;
+  }
 }
