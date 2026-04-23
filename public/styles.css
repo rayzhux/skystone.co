@@ -799,17 +799,12 @@ em { font-style: italic; }
 @media (max-width: 768px) {
   :root { --pad-x: 20px; }
 
-  /* Nav — collapse menu, drop status */
-  .nav { padding: 18px var(--pad-x); }
-  .nav-links,
+  /* Nav — compact on mobile, no burger */
+  .nav { padding: 18px var(--pad-x); gap: 12px; flex-wrap: wrap; }
   .nav-status { display: none; }
-  .nav-burger {
-    display: flex; flex-direction: column; gap: 4px;
-    background: transparent; border: 0; padding: 4px; cursor: pointer;
-  }
-  .nav-burger span {
-    width: 22px; height: 1px; background: var(--ink-2); display: block;
-  }
+  .nav-links { gap: 16px; }
+  .nav-links a { font-size: 11px; }
+  .nav-burger { display: none; }
   .wordmark-name { font-size: 20px; }
   .wordmark-sub { display: none; }
 
