@@ -36,6 +36,26 @@ body {
 img { display: block; max-width: 100%; }
 a { color: inherit; }
 
+/* Skip-to-content link — visually hidden until focused */
+.skip-link {
+  position: absolute;
+  top: -100%;
+  left: var(--pad-x);
+  z-index: 100;
+  padding: 12px 20px;
+  background: var(--ochre);
+  color: var(--bg);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border-radius: 0 0 4px 4px;
+}
+.skip-link:focus {
+  top: 0;
+}
+
 /* Film-grain overlay, applied to the body via a fixed pseudo-element */
 body::after {
   content: "";
@@ -764,8 +784,22 @@ em { font-style: italic; }
   color: var(--mute);
   line-height: 1.8;
 }
+.footer-disclaimer {
+  margin-top: 48px;
+  border-top: 1px solid var(--rule);
+  padding-top: 18px;
+}
+.footer-disclaimer p {
+  margin: 0;
+  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  line-height: 1.7;
+  color: var(--faint);
+  max-width: 80ch;
+}
 .footer-colophon {
-  margin-top: 56px;
+  margin-top: 24px;
   border-top: 1px solid var(--rule);
   padding-top: 18px;
   display: flex;
@@ -1290,6 +1324,71 @@ body::before {
 .portal img,
 .hero-photo {
   transition: opacity 600ms var(--ease-out-quart);
+}
+
+/* =============== PRIVACY PAGE =============== */
+.privacy-nav {
+  padding: 28px var(--pad-x);
+  border-bottom: 1px solid var(--rule);
+}
+.privacy {
+  padding: 80px var(--pad-x) 120px;
+  max-width: 720px;
+}
+.privacy .display {
+  font-size: 48px;
+  margin-bottom: 8px;
+}
+.privacy-updated {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--mute);
+  margin: 0 0 56px;
+}
+.privacy-body section {
+  margin-bottom: 40px;
+}
+.privacy-body h2 {
+  font-family: 'Instrument Serif', serif;
+  font-size: 24px;
+  font-weight: 400;
+  margin: 0 0 12px;
+  color: var(--ink);
+}
+.privacy-body p {
+  margin: 0 0 12px;
+  font-size: 14.5px;
+  line-height: 1.65;
+  color: var(--ink-2);
+}
+.privacy-body a {
+  color: var(--ochre);
+  text-decoration: none;
+  border-bottom: 1px solid var(--ochre);
+  padding-bottom: 1px;
+}
+.privacy-body a:hover {
+  color: var(--ink);
+}
+.privacy-footer {
+  padding: 24px var(--pad-x);
+  border-top: 1px solid var(--rule);
+  display: flex;
+  justify-content: space-between;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--mute);
+}
+.privacy-footer a {
+  color: var(--ink-2);
+  text-decoration: none;
+}
+.privacy-footer a:hover {
+  color: var(--ochre);
 }
 
 /* Print — clean, paper-ready */

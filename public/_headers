@@ -16,6 +16,12 @@
 /styles.css
   Cache-Control: public, max-age=3600, must-revalidate
 
+/privacy
+  Cache-Control: public, max-age=3600, must-revalidate
+
+/privacy/index.html
+  Cache-Control: public, max-age=3600, must-revalidate
+
 /robots.txt
   Cache-Control: public, max-age=86400
 
