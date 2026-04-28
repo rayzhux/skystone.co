@@ -1,6 +1,6 @@
 # skystone.co
 
-Marketing site for **Skystone Partners** — private real estate advisory in Dubai.
+Marketing site for **Skystone Partners** — private China–Gulf advisory in Dubai.
 
 Deployed as a Cloudflare Worker with Static Assets. Pure HTML + CSS, no build step.
 
