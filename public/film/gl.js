@@ -52,6 +52,7 @@ export function createProgram(gl, vs, fs, name = 'program') {
     if (
       info.type === gl.SAMPLER_2D ||
       info.type === gl.SAMPLER_3D ||
+      info.type === gl.SAMPLER_2D_SHADOW ||
       info.type === gl.INT_SAMPLER_2D ||
       info.type === gl.UNSIGNED_INT_SAMPLER_2D
     ) {
@@ -87,6 +88,7 @@ export function createProgram(gl, vs, fs, name = 'program') {
         case gl.FLOAT_MAT4: gl.uniformMatrix4fv(l, false, v); break;
         case gl.SAMPLER_2D:
         case gl.SAMPLER_3D:
+        case gl.SAMPLER_2D_SHADOW:
         case gl.INT_SAMPLER_2D:
         case gl.UNSIGNED_INT_SAMPLER_2D:
           gl.activeTexture(gl.TEXTURE0 + u.unit);

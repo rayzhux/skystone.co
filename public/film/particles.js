@@ -35,13 +35,16 @@ vec4 fetchP(int shape, int id){ return texelFetch(uPos, ivec2(id % uSide, id / u
 vec4 fetchA(int shape, int id){ return texelFetch(uAttr, ivec2(id % uSide, id / uSide + shape * uSide), 0); }
 
 vec4 shapePos(int shape, int id, float seed){
-  if (shape == ${S.FLOW_A}) {
-    vec4 a = fetchP(${S.FLOW_A}, id);
-    vec4 b = fetchP(${S.FLOW_B}, id);
-    float f = fract(seed * 7.13 + uTime * a.w * uFlowSpeed);
-    vec3 p = mix(a.xyz, b.xyz, f);
-    p.y += sin(f * 3.14159) * 1.2;
-    return vec4(p, b.w * smoothstep(0.0, 0.08, f) * smoothstep(1.0, 0.9, f));
+  if (shape == ${S.BURST_A}) {
+    // dust kicked up where a stone lands: drag, a little gravity, drift downwind, fade by shrinking
+    vec4 a = fetchP(${S.BURST_A}, id);
+    vec4 b = fetchP(${S.BURST_B}, id);
+    float tau = uTime - a.w;
+    if (tau < 0.0 || tau > b.w) return vec4(a.xyz, 0.0);
+    float k = 2.6;
+    float life = tau / b.w;
+    vec3 p = a.xyz + b.xyz * (1.0 - exp(-k * tau)) / k + vec3(0.55 * tau, -0.22 * tau * tau, 0.0);
+    return vec4(p, 0.1 * (1.0 + 2.4 * life) * (1.0 - life * life));
   }
   vec4 p = fetchP(shape, id);
   if (shape == ${S.VORTEX}) {

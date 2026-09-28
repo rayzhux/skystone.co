@@ -234,3 +234,31 @@ export function slerp(a, b, t) {
   const ka = Math.sin((1 - t) * w) / s, kb = Math.sin(t * w) / s;
   return [a[0] * ka + b[0] * kb, a[1] * ka + b[1] * kb, a[2] * ka + b[2] * kb];
 }
+
+// ---------- quaternions + ortho (for the stone parts and the shadow camera) ----------
+export const quat = {
+  axisAngle(axis, a) {
+    const s = Math.sin(a / 2);
+    const n = v3.norm(axis);
+    return [n[0] * s, n[1] * s, n[2] * s, Math.cos(a / 2)];
+  },
+  mul(a, b) {
+    return [
+      a[3] * b[0] + a[0] * b[3] + a[1] * b[2] - a[2] * b[1],
+      a[3] * b[1] - a[0] * b[2] + a[1] * b[3] + a[2] * b[0],
+      a[3] * b[2] + a[0] * b[1] - a[1] * b[0] + a[2] * b[3],
+      a[3] * b[3] - a[0] * b[0] - a[1] * b[1] - a[2] * b[2],
+    ];
+  },
+  rotate(q, v) {
+    const [x, y, z, w] = q;
+    const tx = 2 * (y * v[2] - z * v[1]), ty = 2 * (z * v[0] - x * v[2]), tz = 2 * (x * v[1] - y * v[0]);
+    return [v[0] + w * tx + (y * tz - z * ty), v[1] + w * ty + (z * tx - x * tz), v[2] + w * tz + (x * ty - y * tx)];
+  },
+};
+m4.ortho = (out, l, r, b, t, n, f) => {
+  out.fill(0);
+  out[0] = 2 / (r - l); out[5] = 2 / (t - b); out[10] = -2 / (f - n);
+  out[12] = -(r + l) / (r - l); out[13] = -(t + b) / (t - b); out[14] = -(f + n) / (f - n); out[15] = 1;
+  return out;
+};

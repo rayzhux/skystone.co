@@ -1,7 +1,6 @@
 // The film's typography and vector layer. Every element is a pure function of film time, like the
 // WebGL scene underneath, so the whole reel can pause, scrub and export frame-exact.
 import { clamp, ease, lerp } from './math.js';
-import { ROUTE_KM } from './world.js';
 
 const E = ease;
 const fmt = (n) => Math.round(n).toLocaleString('en-US');
@@ -28,32 +27,33 @@ function lettersLine(parent, text, cls = '') {
 
 // Titles: [start, end, lines, class, position]
 const TITLES = [
-  { id: 'two', start: 1.3, end: 3.9, lines: ['Two skies.'], cls: 't-serif t-xl', pos: 'pos-horizon-1' },
-  { id: 'one', start: 2.15, end: 3.9, lines: ['One standard.'], cls: 't-serif t-xl t-italic', pos: 'pos-horizon-2' },
-  { id: 'sub-inv', start: 9.3, end: 11.85, kicker: '01 — Investment', lines: ['Capital deployment, underwriting, structuring.'], cls: 't-sub', pos: 'pos-sub', mode: 'wipe' },
-  { id: 'sub-ins', start: 14.3, end: 15.9, kicker: '02 — Insights', lines: ['Position papers, partner shortlists, a clear go / no-go.'], cls: 't-sub', pos: 'pos-sub', mode: 'wipe' },
+  { id: 'a1', start: 1.3, end: 3.9, lines: ['Steady as stone.'], cls: 't-display', pos: 'pos-horizon-1' },
+  { id: 'a2', start: 2.15, end: 3.9, lines: ['Wide as the sky.'], cls: 't-display t-light', pos: 'pos-horizon-2' },
+  { id: 'sub-inv', start: 9.3, end: 11.3, kicker: '01 — Investment', lines: ['Underwriting, structuring and sourcing — capital deployed with discipline.'], cls: 't-sub', pos: 'pos-sub', mode: 'wipe' },
+  { id: 'sub-ins', start: 14.3, end: 15.9, kicker: '02 — Insights', lines: ['Research, a written view and a clear recommendation.'], cls: 't-sub', pos: 'pos-sub', mode: 'wipe' },
   { id: 'impl', start: 17.4, end: 19.95, lines: ['IMPLEMENTATION'], cls: 't-caps t-caps-xl', pos: 'pos-impl', mode: 'drop' },
-  { id: 'sub-imp', start: 18.9, end: 19.95, kicker: '03 — Implementation', lines: ['Owner’s representation, first agreement to delivery.'], cls: 't-sub', pos: 'pos-sub', mode: 'wipe' },
-  { id: 'd1', start: 20.02, end: 20.97, lines: ['REAL ESTATE', '& CONSTRUCTION'], cls: 't-caps t-caps-xl', pos: 'pos-left', mode: 'slam', count: '01' },
-  { id: 'd2', start: 21.02, end: 21.97, lines: ['Artificial', 'Intelligence'], cls: 't-serif t-xl t-italic', pos: 'pos-center', mode: 'rise', count: '02' },
-  { id: 'd3', start: 22.02, end: 22.97, lines: ['ADVANCED', 'MANUFACTURING'], cls: 't-caps t-caps-wide', pos: 'pos-bottom', mode: 'track', count: '03' },
-  { id: 'w1', start: 26.5, end: 27.92, lines: ['Investment.'], cls: 't-serif t-l', pos: 'pos-stack-1', mode: 'pop' },
-  { id: 'w2', start: 27.0, end: 27.92, lines: ['Insights.'], cls: 't-serif t-l t-italic', pos: 'pos-stack-2', mode: 'pop' },
-  { id: 'w3', start: 27.5, end: 27.92, lines: ['Implementation.'], cls: 't-serif t-l', pos: 'pos-stack-3', mode: 'pop' },
+  { id: 'sub-imp', start: 18.9, end: 19.95, kicker: '03 — Implementation', lines: ['From first agreement through delivery.'], cls: 't-sub', pos: 'pos-sub', mode: 'wipe' },
+  { id: 'd1', start: 20.02, end: 20.97, lines: ['INVESTMENT', 'ADVISORY'], cls: 't-caps t-caps-xl', pos: 'pos-left', mode: 'slam', count: '01' },
+  { id: 'd2', start: 21.02, end: 21.97, lines: ['Management', 'consulting'], cls: 't-display', pos: 'pos-center', mode: 'rise', count: '02' },
+  { id: 'w1', start: 26.5, end: 27.92, lines: ['Investment.'], cls: 't-display t-l', pos: 'pos-stack-1', mode: 'pop' },
+  { id: 'w2', start: 27.0, end: 27.92, lines: ['Insights.'], cls: 't-display t-l t-light', pos: 'pos-stack-2', mode: 'pop' },
+  { id: 'w3', start: 27.5, end: 27.92, lines: ['Implementation.'], cls: 't-display t-l', pos: 'pos-stack-3', mode: 'pop' },
 ];
 
 const CARDS = [
-  { start: 23.0, end: 23.5, lines: ['Investment', 'Advisory'], cls: 'card-bone', text: 't-serif t-xl', count: '04' },
-  { start: 23.5, end: 24.0, lines: ['IMPLEMENTATION', '& OVERSIGHT'], cls: 'card-apricot', text: 't-caps t-caps-xl', count: '05' },
-  { start: 24.0, end: 24.5, lines: ['Strategic', 'Insights'], cls: 'card-ink', text: 't-serif t-xl t-italic', count: '06' },
+  { start: 22.0, end: 22.8, lines: ['Programme', 'management'], cls: 'card-paper', text: 't-display', count: '03' },
+  { start: 22.8, end: 23.6, lines: ['IMPLEMENTATION', '& OVERSIGHT'], cls: 'card-accent', text: 't-caps t-caps-xl', count: '04' },
+  { start: 23.6, end: 24.5, lines: ['Strategic', 'insights'], cls: 'card-ink', text: 't-display t-light', count: '05' },
 ];
 
 const STAGES = [
-  { n: 'I', name: 'Initial consultation', note: '90 minutes. No charge.' },
-  { n: 'II', name: 'Position paper', note: 'Opportunity, structure, shortlist, go / no-go.' },
-  { n: 'III', name: 'Diligence & partner engagement', note: 'Partners in early, terms locked.' },
-  { n: 'IV', name: 'Implementation & oversight', note: 'On the ground, through delivery.' },
+  { n: '1', name: 'Initial consultation', note: 'One meeting. No charge.' },
+  { n: '2', name: 'Position paper', note: 'The opportunity, the options, a clear recommendation.' },
+  { n: '3', name: 'Diligence & engagement', note: 'Counterparties engaged, terms agreed.' },
+  { n: '4', name: 'Implementation & oversight', note: 'Hands-on, through delivery.' },
 ];
+
+const CITY_NAMES = ['London', 'Mumbai', 'Singapore', 'Shanghai', 'New York'];
 
 export function createOverlay(root) {
   root.innerHTML = '';
@@ -73,7 +73,7 @@ export function createOverlay(root) {
     if (T.count) {
       count = el('div', 'ft-count', box);
       el('span', 'ft-count-n', count, T.count);
-      el('span', 'ft-count-of', count, ' / 06');
+      el('span', 'ft-count-of', count, ' / 05');
     }
     box.style.display = 'none';
     return { ...T, box, kicker, lines, count, shown: false };
@@ -86,23 +86,27 @@ export function createOverlay(root) {
     const lines = C.lines.map((l) => lettersLine(inner, l));
     const count = el('div', 'ft-count', box);
     el('span', 'ft-count-n', count, C.count);
-    el('span', 'ft-count-of', count, ' / 06');
+    el('span', 'ft-count-of', count, ' / 05');
     box.style.display = 'none';
     return { ...C, box, inner, lines, shown: false };
   });
 
-  // route labels + counter
-  const labDubai = el('div', 'anchor-label', titlesEl);
+  // route labels: Dubai, then each city as its arc lands
+  const labDubai = el('div', 'anchor-label al-hub', titlesEl);
   el('div', 'al-name', labDubai, 'Dubai');
-  el('div', 'al-coord', labDubai, '25.2048° N · 55.2708° E');
-  const labSha = el('div', 'anchor-label al-right', titlesEl);
-  el('div', 'al-name', labSha, 'Shanghai');
-  el('div', 'al-coord', labSha, '31.2304° N · 121.4737° E');
-  const counter = el('div', 'route-counter', titlesEl);
-  const counterNum = el('div', 'rc-num', counter, '0');
-  el('div', 'rc-unit', counter, 'km, Dubai to Shanghai');
-  const counterPlus = el('div', 'rc-plus', counter, 'Shanghai runs four hours ahead.');
-  [labDubai, labSha, counter].forEach((x) => (x.style.display = 'none'));
+  el('div', 'al-coord', labDubai, '25.20° N · 55.27° E');
+  const cityLabs = CITY_NAMES.map((n) => {
+    const e = el('div', 'anchor-label al-city', titlesEl);
+    el('div', 'al-name', e, n);
+    e.style.display = 'none';
+    return e;
+  });
+  labDubai.style.display = 'none';
+  // the keystone callout
+  const keyLab = el('div', 'callout', titlesEl);
+  el('span', 'callout-name', keyLab, 'Keystone');
+  el('span', 'callout-note', keyLab, 'The last stone in, and the one that holds the rest.');
+  keyLab.style.display = 'none';
 
   // stages
   const stageBox = el('div', 'stages', titlesEl);
@@ -112,11 +116,11 @@ export function createOverlay(root) {
   const stageKicker = el('div', 'stage-kicker', stageBox, 'Four stages');
   stageBox.style.display = 'none';
 
-  // six disciplines rail
+  // five disciplines rail
   const rail = el('div', 'disc-rail', titlesEl);
-  el('div', 'disc-rail-label', rail, 'Six disciplines');
+  el('div', 'disc-rail-label', rail, 'What we do');
   const railBar = el('div', 'disc-rail-bar', rail);
-  const railSegs = Array.from({ length: 6 }, () => el('i', '', railBar));
+  const railSegs = Array.from({ length: 5 }, () => el('i', '', railBar));
   rail.style.display = 'none';
 
   // the end card
@@ -124,8 +128,8 @@ export function createOverlay(root) {
   const wordmark = el('div', 'endcard-mark', endCard);
   const markLetters = lettersLine(wordmark, 'Skystone', 'mark-line');
   const sun = el('span', 'endcard-sun', wordmark);
-  const endLine = el('div', 'endcard-line t-serif t-italic', endCard, 'Investment. Insights. Implementation.');
-  const endMeta = el('div', 'endcard-meta', endCard, 'Private China–Gulf advisory · Dubai');
+  const endLine = el('div', 'endcard-line', endCard, 'Investment. Insights. Implementation.');
+  const endMeta = el('div', 'endcard-meta', endCard, 'Advisory · Dubai');
   endCard.style.display = 'none';
 
   let W = 1, H = 1, dpr = 1;
@@ -133,6 +137,7 @@ export function createOverlay(root) {
     W = w; H = h; dpr = Math.min(d || 1, 2);
     vector.width = Math.round(w * dpr);
     vector.height = Math.round(h * dpr);
+    vectorDirty = true;
   }
 
   const show = (o, on) => {
@@ -219,26 +224,33 @@ export function createOverlay(root) {
         }));
       }
     }
-    // ---- route labels + counter
+    // ---- route labels
     const routeOn = t >= 5.7 && t < 8.0;
     vis(labDubai, routeOn && frame.anchors.dubai);
-    vis(labSha, routeOn && t >= 7.35 && frame.anchors.shanghai);
-    vis(counter, routeOn);
-    if (routeOn) {
-      const pd = frame.anchors.dubai && film.project(frame.anchors.dubai);
+    if (routeOn && frame.anchors.dubai) {
+      const pd = film.project(frame.anchors.dubai);
       if (pd) {
         labDubai.style.transform = `translate(${(pd[0] * W).toFixed(1)}px, ${(pd[1] * H).toFixed(1)}px)`;
-        labDubai.style.opacity = E.outExpo(clamp((t - 5.85) / 0.5)).toFixed(3);
+        labDubai.style.opacity = E.outExpo(clamp((t - 5.8) / 0.5)).toFixed(3);
       }
-      const ps = frame.anchors.shanghai && film.project(frame.anchors.shanghai);
-      if (ps) {
-        labSha.style.transform = `translate(${(ps[0] * W).toFixed(1)}px, ${(ps[1] * H).toFixed(1)}px)`;
-        labSha.style.opacity = E.outExpo(clamp((t - 7.4) / 0.4)).toFixed(3);
-      }
-      const tr = frame.hud.trim ?? 0;
-      counterNum.textContent = fmt(ROUTE_KM * tr);
-      counter.style.opacity = (E.outExpo(clamp((t - 5.8) / 0.4)) * (1 - clamp((t - 7.85) / 0.15))).toFixed(3);
-      counterPlus.style.opacity = E.outExpo(clamp((t - 7.1) / 0.5)).toFixed(3);
+    }
+    cityLabs.forEach((lab, k) => {
+      const tk = 5.85 + (k * 0.13 + 0.42) * 1.9;
+      const on = routeOn && t >= tk - 0.05 && frame.anchors.cities;
+      vis(lab, on);
+      if (!on) return;
+      const q = film.project(frame.anchors.cities[k]);
+      if (!q) return;
+      lab.style.transform = `translate(${(q[0] * W).toFixed(1)}px, ${(q[1] * H).toFixed(1)}px)`;
+      lab.style.opacity = E.outExpo(clamp((t - tk) / 0.35)).toFixed(3);
+    });
+    // ---- keystone callout
+    const keyOn = t >= 19.55 && t < 19.97 && frame.anchors.keystone;
+    vis(keyLab, keyOn);
+    if (keyOn) {
+      const q = film.project(frame.anchors.keystone);
+      if (q) keyLab.style.transform = `translate(${(q[0] * W).toFixed(1)}px, ${(q[1] * H).toFixed(1)}px)`;
+      keyLab.style.opacity = E.outExpo(clamp((t - 19.55) / 0.25)).toFixed(3);
     }
     // ---- stages
     const stOn = t >= 24.5 && t < 26.5;
@@ -260,9 +272,9 @@ export function createOverlay(root) {
     const railOn = t >= 20 && t < 24.5;
     vis(rail, railOn);
     if (railOn) {
-      const k = Math.floor((t - 20) < 3 ? (t - 20) : 3 + (t - 23) / 0.5);
+      const k = t < 21 ? 0 : t < 22 ? 1 : t < 22.8 ? 2 : t < 23.6 ? 3 : 4;
       railSegs.forEach((s, i) => s.classList.toggle('on', i <= k));
-      rail.classList.toggle('on-card', t >= 23);
+      rail.classList.toggle('on-card', t >= 22 && t < 23.6);
     }
     // ---- end card
     const endOn = t >= 32.8 && t < 39.6;
@@ -287,7 +299,7 @@ export function createOverlay(root) {
   }
 
   // ---------------------------------------------------------------- vector layer
-  const BONE = 'rgba(243,238,230,', APR = 'rgba(246,169,100,';
+  const BONE = 'rgba(244,242,238,', APR = 'rgba(242,166,94,';
   function ring(x, y, r, a, w = 1, col = BONE) {
     g.beginPath();
     g.arc(x, y, r, 0, Math.PI * 2);
@@ -295,10 +307,16 @@ export function createOverlay(root) {
     g.lineWidth = w;
     g.stroke();
   }
+  // the vector layer is idle most of the film: skip the clear (and the full-screen texture upload it triggers) when empty
+  let vectorDirty = true;
   function drawVector(t, frame, film) {
+    const busy = (t >= 5.7 && t < 8.0) || (t >= 19.55 && t < 19.97) || (t >= 24.5 && t < 26.6);
+    if (!busy && !vectorDirty) return;
+    vectorDirty = busy;
     const s = dpr;
     g.setTransform(1, 0, 0, 1, 0, 0);
     g.clearRect(0, 0, vector.width, vector.height);
+    if (!busy) return;
     g.setTransform(s, 0, 0, s, 0, 0);
     const P = (p) => { const q = film.project(p); return q ? [q[0] * W, q[1] * H] : null; };
 
@@ -313,66 +331,21 @@ export function createOverlay(root) {
         ring(q[0], q[1], 10, 0.5 * E.outExpo(clamp((t - t0) / 0.4)), 1);
       };
       draw(frame.anchors.dubai, 5.9);
-      draw(frame.anchors.shanghai, 7.55);
+      (frame.anchors.cities || []).forEach((c, k) => draw(c, 5.85 + (k * 0.13 + 0.42) * 1.9));
     }
 
-    // dimension line on the project tower
-    const tw = frame.anchors.tower;
-    if (tw && t >= 17.2 && t < 20.0) {
-      const a = E.outExpo(clamp((t - 17.3) / 0.6)) * (1 - clamp((t - 19.8) / 0.2));
-      const x = tw.w / 2 + 4.5;
-      const base = P([x, 0, tw.d / 2]);
-      const top = P([x, tw.height, tw.d / 2]);
-      if (base && top) {
-        g.strokeStyle = BONE + (0.7 * a) + ')';
+    // keystone leader line
+    if (t >= 19.55 && t < 19.97 && frame.anchors.keystone) {
+      const q = P(frame.anchors.keystone);
+      if (q) {
+        const a = E.outExpo(clamp((t - 19.55) / 0.25));
+        g.strokeStyle = BONE + (0.8 * a) + ')';
         g.lineWidth = 1;
-        g.beginPath(); g.moveTo(base[0], base[1]); g.lineTo(top[0], top[1]); g.stroke();
-        g.font = `500 ${Math.max(9, Math.round(H / 90))}px "JetBrains Mono", ui-monospace, monospace`;
-        g.textBaseline = 'middle';
-        let done = 0;
-        (tw.floors || []).forEach((f, i) => {
-          if (f <= 0) return;
-          done = i + 1;
-          const q = P([x, (i + 1) * tw.floorH, tw.d / 2]);
-          if (!q) return;
-          g.strokeStyle = APR + (0.9 * a * f) + ')';
-          g.beginPath(); g.moveTo(q[0] - 5, q[1]); g.lineTo(q[0] + 5, q[1]); g.stroke();
-          if (i % 2 === 1 || i === tw.floors.length - 1) {
-            g.fillStyle = BONE + (0.75 * a * f) + ')';
-            g.fillText(`+${((i + 1) * tw.floorH).toFixed(2)}`, q[0] + 10, q[1]);
-          }
-        });
-        if (done) {
-          const q = P([x, done * tw.floorH, tw.d / 2]);
-          if (q) {
-            g.fillStyle = APR + a + ')';
-            g.font = `600 ${Math.max(11, Math.round(H / 64))}px "JetBrains Mono", ui-monospace, monospace`;
-            g.fillText(`${(done * tw.floorH).toFixed(2)} m`, q[0] + 10, q[1] - Math.max(14, H / 40));
-          }
-        }
-      }
-    }
-
-    // gear rings for advanced manufacturing
-    if (t >= 22.0 && t < 23.0 && frame.anchors.tower) {
-      const c = P([0, 22, 0]);
-      if (c) {
-        const a = E.outExpo(clamp((t - 22.0) / 0.3)) * (1 - clamp((t - 22.9) / 0.1));
-        const R = Math.min(W, H) * 0.34;
-        [[1, 60, 1], [0.8, 36, -1.6], [0.62, 24, 2.4]].forEach(([k, n, sp]) => {
-          const r = R * k;
-          ring(c[0], c[1], r, 0.45 * a);
-          const rot = (t - 22) * sp;
-          g.strokeStyle = APR + (0.8 * a) + ')';
-          g.beginPath();
-          for (let i = 0; i < n; i++) {
-            const ang = rot + (i / n) * Math.PI * 2;
-            const r2 = r + (i % 5 === 0 ? 9 : 5);
-            g.moveTo(c[0] + Math.cos(ang) * r, c[1] + Math.sin(ang) * r);
-            g.lineTo(c[0] + Math.cos(ang) * r2, c[1] + Math.sin(ang) * r2);
-          }
-          g.stroke();
-        });
+        g.beginPath();
+        g.moveTo(q[0], q[1] + 6);
+        g.lineTo(q[0], q[1] + 6 + 70 * a);
+        g.stroke();
+        ring(q[0], q[1], 4, 0.9 * a, 1.5, APR);
       }
     }
 
@@ -389,9 +362,9 @@ export function createOverlay(root) {
       const ph = x0 + (x1 - x0) * clamp((t - 24.5) / 2);
       g.fillStyle = BONE + a + ')';
       g.fillRect(ph - 0.5, y - 16, 1, 32);
-      g.font = `500 ${Math.max(10, Math.round(H / 80))}px "JetBrains Mono", ui-monospace, monospace`;
+      g.font = `500 ${Math.max(10, Math.round(H / 80))}px "Geist Mono", ui-monospace, monospace`;
       g.textBaseline = 'top';
-      ['I', 'II', 'III', 'IV'].forEach((n, i) => {
+      ['1', '2', '3', '4'].forEach((n, i) => {
         g.fillStyle = BONE + (0.6 * a) + ')';
         g.fillText(n, x0 + i * seg4 + 2, y + 12);
       });

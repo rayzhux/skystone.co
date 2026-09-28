@@ -1,19 +1,38 @@
 // Particle target shapes. Every shape stores, per particle: position (xyz) + size (w), and an RGBA8
 // attribute: r = highlight, g = brightness jitter, b = group, a = spare.
 import { mulberry32, latLon, v3, DEG } from './math.js';
-import { CITY, NETWORK, BRAIN, STONE, DUBAI, SHANGHAI, dune, buildStoneMesh } from './world.js';
+import { STONE, DUBAI, CITIES, TOPO, topoH, dune, buildStoneMesh, archEvents } from './world.js';
 
 export const S = {
-  SCATTER: 0, HORIZON: 1, DESERT: 2, GLOBE: 3, RAIN: 4, TOWERS: 5,
-  FLOW_A: 6, FLOW_B: 7, BRAIN: 8, VORTEX: 9, POINT: 10, GRID: 11, FINAL: 12,
+  SCATTER: 0, HORIZON: 1, DESERT: 2, GLOBE: 3, TERRAIN: 4, BURST_A: 5, BURST_B: 6, VORTEX: 7, POINT: 8, FINAL: 9,
 };
-export const SHAPE_COUNT = 13;
+export const SHAPE_COUNT = 10;
 
 function gauss(rnd) {
   let u = 0, v = 0;
   while (u === 0) u = rnd();
   while (v === 0) v = rnd();
   return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
+}
+
+/** The insight landscape sampled on a grid (the mesh and the scan points both use it). */
+export function buildTopoGrid(n = 201) {
+  const size = TOPO.size;
+  const heights = new Float32Array(n * n);
+  for (let j = 0; j < n; j++) {
+    for (let i = 0; i < n; i++) {
+      heights[j * n + i] = topoH(-size / 2 + (i / (n - 1)) * size, -size / 2 + (j / (n - 1)) * size);
+    }
+  }
+  return { n, size, heights };
+}
+function sampleGrid(g, x, z) {
+  const { n, size, heights } = g;
+  const fx = ((x + size / 2) / size) * (n - 1), fz = ((z + size / 2) / size) * (n - 1);
+  const i = Math.max(0, Math.min(n - 2, Math.floor(fx))), j = Math.max(0, Math.min(n - 2, Math.floor(fz)));
+  const u = fx - i, v = fz - j;
+  const h = (a, b) => heights[b * n + a];
+  return (h(i, j) * (1 - u) + h(i + 1, j) * u) * (1 - v) + (h(i, j + 1) * (1 - u) + h(i + 1, j + 1) * u) * v;
 }
 
 /** mask: { w, h, data: Uint8Array } equirectangular land mask (1 = land) */
@@ -26,6 +45,7 @@ export function buildShapes(side, mask) {
     pos[o] = x; pos[o + 1] = y; pos[o + 2] = z; pos[o + 3] = size;
     attr[o] = hi; attr[o + 1] = bright; attr[o + 2] = group; attr[o + 3] = 0;
   };
+  const topoGrid = buildTopoGrid();
 
   // --- SCATTER: a loose volume of dust
   {
@@ -35,14 +55,13 @@ export function buildShapes(side, mask) {
     }
   }
 
-  // --- DESERT + HORIZON: log-distributed through the view frustum, so density reads even on screen
-  const desert = (rnd, i, shape, group = 0, extra = 1) => {
+  // --- DESERT + HORIZON: log-distributed through the view frustum, riding the dunes
+  const desert = (rnd, i, shape, group = 0, extra = 1, z0 = 5) => {
     const u = rnd();
     const d = Math.exp(Math.log(1.4) + (Math.log(260) - Math.log(1.4)) * Math.pow(u, 0.92));
     const x = (rnd() * 2 - 1) * (0.95 * d + 5) * extra;
-    const z = 5 - d;
-    const flat = Math.min(1, Math.max(0, (d - 2) / 12));
-    const y = (dune(x, z) + 0.6) * 0.55 * flat + 0.01;
+    const z = z0 - d;
+    const y = dune(x, z) + 0.02;
     const size = (0.006 + 0.011 * rnd()) * (1 + d * 0.04);
     const glint = rnd() < 0.035 ? 255 : 0;
     put(shape, i, x, y, z, size, glint, 110 + rnd() * 145, group);
@@ -53,12 +72,11 @@ export function buildShapes(side, mask) {
     const far = 420;
     for (let i = 0; i < N; i++) {
       const [x, d] = desert(rnd, i, S.DESERT);
-      // matching horizon position: same screen column, pushed out to the vanishing line
       put(S.HORIZON, i, (x * far) / Math.max(d, 1.4), 0.0, 5 - far, 0.26 + rnd() * 0.16, 0, 255);
     }
   }
 
-  // --- GLOBE (unit sphere): land dots, sparse ocean, Gulf + East China highlighted
+  // --- GLOBE (unit sphere): land dots, sparse ocean; Dubai and the five cities glow
   {
     const rnd = mulberry32(3);
     const land = (lat, lon) => {
@@ -66,9 +84,9 @@ export function buildShapes(side, mask) {
       const y = Math.min(mask.h - 1, Math.floor(((90 - lat) / 180) * mask.h));
       return mask.data[y * mask.w + x] === 1;
     };
-    const dub = latLon(DUBAI.lat, DUBAI.lon), sha = latLon(SHANGHAI.lat, SHANGHAI.lon);
+    const hubs = [DUBAI, ...CITIES].map((c) => latLon(c.lat, c.lon));
     let i = 0;
-    const oceanAccept = 0.045; // roughly 8% of the dots sit on the oceans
+    const oceanAccept = 0.045;
     while (i < N) {
       const zz = rnd() * 2 - 1, ph = rnd() * Math.PI * 2;
       const rr = Math.sqrt(1 - zz * zz);
@@ -77,89 +95,40 @@ export function buildShapes(side, mask) {
       const lon = Math.atan2(p[0], p[2]) / DEG;
       const isLand = land(lat, lon);
       if (!isLand && rnd() > oceanAccept) continue;
-      const dd = Math.acos(Math.min(1, v3.dot(p, dub))) / DEG;
-      const ds = Math.acos(Math.min(1, v3.dot(p, sha))) / DEG;
-      const hi = isLand && (dd < 8 || ds < 10) ? 255 : isLand && (dd < 13 || ds < 16) ? 110 : 0;
+      let near = 180;
+      for (const hb of hubs) near = Math.min(near, Math.acos(Math.min(1, v3.dot(p, hb))) / DEG);
+      const hi = isLand && near < 3.5 ? 255 : isLand && near < 7 ? 90 : 0;
       const s = isLand ? 1.0 : 0.994;
       put(S.GLOBE, i, p[0] * s, p[1] * s, p[2] * s, isLand ? 0.0042 + rnd() * 0.0026 : 0.0032, hi, isLand ? 150 + rnd() * 105 : 60);
       i++;
     }
   }
 
-  // --- RAIN: above the city
+  // --- TERRAIN: scan points over the insight landscape
   {
     const rnd = mulberry32(4);
+    const half = TOPO.size * 0.47;
     for (let i = 0; i < N; i++) {
-      const a = rnd() * Math.PI * 2, r = Math.sqrt(rnd()) * 70;
-      put(S.RAIN, i, Math.cos(a) * r, 50 + rnd() * 110, Math.sin(a) * r, 0.14, 0, 150 + rnd() * 105);
+      const x = (rnd() * 2 - 1) * half, z = (rnd() * 2 - 1) * half;
+      put(S.TERRAIN, i, x, sampleGrid(topoGrid, x, z) + 0.35, z, 0.16 + rnd() * 0.08, rnd() < 0.02 ? 255 : 0, 140 + rnd() * 115);
     }
   }
 
-  // --- TOWERS: area-weighted points on every facade and roof
+  // --- BURSTS: dust kicked up where each arch stone lands (A = origin + time, B = velocity + life)
   {
     const rnd = mulberry32(5);
-    const faces = [];
-    let total = 0;
-    for (const t of CITY.towers) {
-      const areas = [t.w * t.h, t.w * t.h, t.d * t.h, t.d * t.h, t.w * t.d];
-      for (let f = 0; f < 5; f++) { total += areas[f]; faces.push([t, f, total]); }
-    }
+    const ev = archEvents();
     for (let i = 0; i < N; i++) {
-      const r = rnd() * total;
-      let lo = 0, hi = faces.length - 1;
-      while (lo < hi) { const m = (lo + hi) >> 1; if (faces[m][2] < r) lo = m + 1; else hi = m; }
-      const [t, f] = faces[lo];
-      const u = rnd() - 0.5, v = rnd();
-      const o = 0.06;
-      let x, y, z;
-      if (f === 0) { x = t.x + u * t.w; y = v * t.h; z = t.z + t.d / 2 + o; }
-      else if (f === 1) { x = t.x + u * t.w; y = v * t.h; z = t.z - t.d / 2 - o; }
-      else if (f === 2) { x = t.x + t.w / 2 + o; y = v * t.h; z = t.z + u * t.d; }
-      else if (f === 3) { x = t.x - t.w / 2 - o; y = v * t.h; z = t.z + u * t.d; }
-      else { x = t.x + u * t.w; y = t.h + o; z = t.z + (v - 0.5) * t.d; }
-      put(S.TOWERS, i, x, y, z, 0.13, 0, 150 + rnd() * 105);
-    }
-  }
-
-  // --- FLOW: data moving along the rooftop network (A = start + speed, B = end + size)
-  {
-    const rnd = mulberry32(6);
-    const { nodes, edges, lens } = NETWORK;
-    const cum = [];
-    let total = 0;
-    lens.forEach((l) => { total += l; cum.push(total); });
-    for (let i = 0; i < N; i++) {
-      const r = rnd() * total;
-      let k = cum.findIndex((c) => c >= r);
-      if (k < 0) k = edges.length - 1;
-      let [a, b] = edges[k];
-      if (rnd() < 0.5) [a, b] = [b, a];
-      const A = nodes[a], B = nodes[b];
-      const j = () => gauss(rnd) * 0.22;
-      const oA = (i * 4 + (S.FLOW_A * N) * 4), oB = (i * 4 + (S.FLOW_B * N) * 4);
-      pos[oA] = A[0] + j(); pos[oA + 1] = A[1] + j(); pos[oA + 2] = A[2] + j(); pos[oA + 3] = 0.05 + rnd() * 0.16;
-      pos[oB] = B[0] + j(); pos[oB + 1] = B[1] + j(); pos[oB + 2] = B[2] + j(); pos[oB + 3] = 0.16 + rnd() * 0.12;
-      attr[oA] = attr[oB] = 255;
-      attr[oA + 1] = attr[oB + 1] = 160 + rnd() * 95;
-    }
-  }
-
-  // --- BRAIN: clustered at neurons, strung along synapses
-  {
-    const rnd = mulberry32(7);
-    const { nodes, edges } = BRAIN;
-    for (let i = 0; i < N; i++) {
-      if (rnd() < 0.42) {
-        const n = nodes[Math.floor(rnd() * nodes.length)];
-        const s = 0.32;
-        put(S.BRAIN, i, n[0] + gauss(rnd) * s, n[1] + gauss(rnd) * s, n[2] + gauss(rnd) * s, 0.09 + rnd() * 0.07, 255, 200 + rnd() * 55);
-      } else {
-        const [a, b] = edges[Math.floor(rnd() * edges.length)];
-        const t = rnd();
-        const A = nodes[a], B = nodes[b];
-        const j = 0.045;
-        put(S.BRAIN, i, A[0] + (B[0] - A[0]) * t + gauss(rnd) * j, A[1] + (B[1] - A[1]) * t + gauss(rnd) * j, A[2] + (B[2] - A[2]) * t + gauss(rnd) * j, 0.05, 30, 90 + rnd() * 90);
-      }
+      const e = ev[i % ev.length];
+      const a = rnd() * Math.PI * 2, el = rnd() * 0.9;
+      const sp = (0.6 + rnd() * 2.2) * e.spread;
+      const vx = Math.cos(a) * Math.cos(el) * sp, vz = Math.sin(a) * Math.cos(el) * sp * 0.6, vy = Math.sin(el) * sp * 0.7 + 0.2;
+      const oA = (S.BURST_A * N + i) * 4, oB = (S.BURST_B * N + i) * 4;
+      pos[oA] = e.pos[0] + gauss(rnd) * 0.4 * e.spread; pos[oA + 1] = e.pos[1] + gauss(rnd) * 0.25; pos[oA + 2] = e.pos[2] + gauss(rnd) * 0.5;
+      pos[oA + 3] = e.t + rnd() * 0.05;
+      pos[oB] = vx; pos[oB + 1] = vy; pos[oB + 2] = vz; pos[oB + 3] = 0.7 + rnd() * 1.1;
+      attr[oA] = attr[oB] = rnd() < 0.08 ? 255 : 0;
+      attr[oA + 1] = attr[oB + 1] = 150 + rnd() * 105;
     }
   }
 
@@ -184,22 +153,6 @@ export function buildShapes(side, mask) {
     }
   }
 
-  // --- GRID: a dotted drafting lattice on the ground
-  {
-    const rnd = mulberry32(10);
-    const step = 2.4, ext = 62;
-    const lines = Math.floor(ext / step);
-    for (let i = 0; i < N; i++) {
-      const k = Math.floor(rnd() * (lines * 2 + 1)) - lines;
-      const along = (rnd() * 2 - 1) * ext;
-      const major = k % 5 === 0;
-      const vertical = rnd() < 0.5;
-      const x = vertical ? k * step : along;
-      const z = vertical ? along : k * step;
-      put(S.GRID, i, x, 0.02, z, major ? 0.075 : 0.05, major ? 200 : 0, major ? 255 : 150);
-    }
-  }
-
   // --- FINAL: the stone's skin (group 1) standing in the desert (group 0)
   {
     const rnd = mulberry32(11);
@@ -215,9 +168,8 @@ export function buildShapes(side, mask) {
       total += area;
       tris.push([A, B, C, total]);
     }
-    const shellShare = 0.36;
     for (let i = 0; i < N; i++) {
-      if (rnd() < shellShare) {
+      if (rnd() < 0.36) {
         const r = rnd() * total;
         let lo = 0, hi = tris.length - 1;
         while (lo < hi) { const m = (lo + hi) >> 1; if (tris[m][3] < r) lo = m + 1; else hi = m; }
@@ -228,12 +180,13 @@ export function buildShapes(side, mask) {
         const c = STONE.center;
         put(S.FINAL, i, p[0] * 1.012 + c[0], p[1] * 1.012 + c[1], p[2] * 1.012 + c[2], 0.03 + rnd() * 0.02, 180, 230, 1);
       } else {
-        desert(rnd, i, S.FINAL, 0, 1.15);
+        // starts behind the closing camera so the glitter never ends in a hard line
+        desert(rnd, i, S.FINAL, 0, 1.15, 12.5);
       }
     }
   }
 
-  return { pos, attr, N, side };
+  return { pos, attr, N, side, topoGrid };
 }
 
 /** Decode a 1-bit land-mask image into a byte array. */

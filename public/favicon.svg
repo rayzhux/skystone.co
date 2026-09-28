@@ -1,10 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <defs>
-    <radialGradient id="s" cx="0.4" cy="0.4" r="0.6"><stop offset="0" stop-color="#FFC98C"/><stop offset="0.55" stop-color="#F4A862"/><stop offset="1" stop-color="#B8502A"/></radialGradient>
-    <linearGradient id="k" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0C1330"/><stop offset="0.62" stop-color="#2A2B4C"/><stop offset="1" stop-color="#07080D"/></linearGradient>
-  </defs>
-  <rect width="64" height="64" rx="14" fill="url(#k)"/>
-  <rect x="8" y="41.5" width="48" height="1.2" fill="#F4A862" opacity="0.85"/>
-  <text x="29" y="46" text-anchor="middle" font-family="'Bodoni 72', Didot, 'Bodoni Moda', 'Times New Roman', serif" font-size="46" fill="#F3EEE6">S</text>
-  <circle cx="48" cy="41" r="5" fill="url(#s)"/>
+  <rect width="64" height="64" rx="14" fill="#0B0C10"/>
+  <text x="28" y="47" text-anchor="middle" font-family="Geist, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-weight="700" font-size="44" letter-spacing="-2" fill="#F4F2EE">S</text>
+  <circle cx="48.5" cy="43" r="5" fill="#F2A65E"/>
 </svg>

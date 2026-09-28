@@ -4,7 +4,9 @@ import { m4, clamp, lerp, DEG } from './math.js';
 import { buildShapes, readMask } from './shapes.js';
 import { createSky } from './sky.js';
 import { createParticles } from './particles.js';
-import { createBoxes } from './boxes.js';
+import { createParts } from './parts.js';
+import { createTerrain } from './terrain.js';
+import { createShadow } from './shadow.js';
 import { createLines, createLineSet, polylineSegs } from './lines.js';
 import { createBillboards } from './billboards.js';
 import { createStone } from './stone.js';
@@ -12,10 +14,10 @@ import { createGlobe } from './globe.js';
 import { createPost } from './post.js';
 import { createDirector, lineSets, DURATION } from './director.js';
 
-const SERIF = '"Bodoni Moda", "Bodoni 72", Didot, Georgia, serif';
+const SANS = '"Geist", "Helvetica Neue", Arial, sans-serif';
 const WORDS = [
-  { id: 'investment', text: 'INVESTMENT', style: 'normal 500', tracking: 0.06 },
-  { id: 'insights', text: 'Insights', style: 'italic 400', tracking: 0 },
+  { id: 'investment', text: 'INVESTMENT', style: 'normal 600', tracking: 0.08 },
+  { id: 'insights', text: 'Insights', style: 'normal 500', tracking: -0.01 },
 ];
 
 function loadImage(src) {
@@ -27,7 +29,7 @@ function loadImage(src) {
   });
 }
 
-// particle targets are built in a worker so the page stays responsive while the film boots
+// particle targets and the landscape grid are built in a worker so the page stays responsive
 function buildShapesAsync(side, mask) {
   return new Promise((resolve) => {
     let w;
@@ -38,7 +40,7 @@ function buildShapesAsync(side, mask) {
       return;
     }
     const fallback = () => { w.terminate(); resolve(buildShapes(side, mask)); };
-    const timer = setTimeout(fallback, 8000);
+    const timer = setTimeout(fallback, 10000);
     w.onmessage = (e) => { clearTimeout(timer); w.terminate(); resolve(e.data); };
     w.onerror = () => { clearTimeout(timer); fallback(); };
     w.postMessage({ side, mask });
@@ -55,10 +57,10 @@ export function detectTier() {
 }
 
 const TIERS = {
-  high: { side: 256, samples: 4, maxDpr: 1.75, maxPixels: 2.5e6 },
-  medium: { side: 192, samples: 4, maxDpr: 1.5, maxPixels: 1.9e6 },
-  low: { side: 136, samples: 0, maxDpr: 1.6, maxPixels: 1.25e6 },
-  export: { side: 256, samples: 4, maxDpr: 1, maxPixels: 1e9 },
+  high: { side: 256, samples: 4, maxDpr: 1.75, maxPixels: 2.5e6, shadow: 2048 },
+  medium: { side: 192, samples: 4, maxDpr: 1.5, maxPixels: 1.9e6, shadow: 2048 },
+  low: { side: 136, samples: 0, maxDpr: 1.6, maxPixels: 1.25e6, shadow: 1024 },
+  export: { side: 256, samples: 4, maxDpr: 1, maxPixels: 1e9, shadow: 4096 },
 };
 
 export async function createFilm(canvas, { tier = detectTier(), landUrl = '/film/land.png', fixedSize = null } = {}) {
@@ -72,33 +74,24 @@ export async function createFilm(canvas, { tier = detectTier(), landUrl = '/film
   const sky = createSky(gl);
   const globe = createGlobe(gl);
   const particles = createParticles(gl, shapes);
-  const boxes = createBoxes(gl, 600);
+  const parts = createParts(gl, 256);
+  const terrain = createTerrain(gl, { topoGrid: shapes.topoGrid, quality: tier === 'low' ? 'low' : 'high' });
+  const shadow = createShadow(gl, T.shadow);
   const lines = createLines(gl);
   const billboards = createBillboards(gl);
   const stone = createStone(gl);
   const post = createPost(gl);
 
-  // static line sets
   const L = lineSets();
-  lines.add('route', createLineSet(gl, polylineSegs(L.route.polyline)));
+  lines.add('arcs', createLineSet(gl, L.arcs.edges.flatMap((e) => polylineSegs(e.pts, e.delay, e.seed))));
   lines.add('grat', createLineSet(gl, L.grat.polylines.flatMap((pl, i) => polylineSegs(pl, 0, i * 0.37))));
-  lines.add('network', createLineSet(gl, L.network.edges.flatMap((e) => polylineSegs(e.pts, e.delay, e.seed))));
-  lines.add('brain', createLineSet(gl, L.brain.edges.flatMap((e) => polylineSegs(e.pts, e.delay, e.seed))));
-  {
-    // crane strokes are independent; order them so the draw-on climbs the mast, then runs out along the jib
-    const strokes = L.crane.segments
-      .map(([a, b]) => ({ a, b, k: Math.min(a[1], b[1]) * 10 + (a[0] + b[0]) * 0.5 }))
-      .sort((p, q) => p.k - q.k);
-    const n = strokes.length;
-    lines.add('crane', createLineSet(gl, strokes.map((s, i) => [...s.a, ...s.b, i / n, (i + 1) / n, 0, 0])));
-  }
+  lines.add('route', createLineSet(gl, polylineSegs(L.route.polyline)));
 
-  const rasterize = () => WORDS.forEach((w) => billboards.addWord(w.id, w.text, w.style, SERIF, { tracking: w.tracking }));
+  const rasterize = () => WORDS.forEach((w) => billboards.addWord(w.id, w.text, w.style, SANS, { tracking: w.tracking }));
   rasterize();
-  const fontsReady = Promise.all([
-    document.fonts.load('500 120px "Bodoni Moda"'),
-    document.fonts.load('italic 400 120px "Bodoni Moda"'),
-  ]).then(() => rasterize()).catch(() => {});
+  const fontsReady = Promise.all([document.fonts.load('600 120px "Geist"'), document.fonts.load('500 120px "Geist"')])
+    .then(() => rasterize())
+    .catch(() => {});
 
   const director = createDirector({ wordAspect: (id) => billboards.aspect(id) });
 
@@ -159,19 +152,33 @@ export async function createFilm(canvas, { tier = detectTier(), landUrl = '/film
     cam.pxScale = height / 1080;
     const l = frame.particles.lightDir, v = cam.view;
     cam.sunDirView = [v[0] * l[0] + v[4] * l[1] + v[8] * l[2], v[1] * l[0] + v[5] * l[1] + v[9] * l[2], v[2] * l[0] + v[6] * l[1] + v[10] * l[2]];
+    // where the sun sits on screen, for the light shafts
+    const d = frame.sky.sunDir, m = cam.viewProj;
+    const cx = m[0] * d[0] + m[4] * d[1] + m[8] * d[2];
+    const cy = m[1] * d[0] + m[5] * d[1] + m[9] * d[2];
+    const cw = m[3] * d[0] + m[7] * d[1] + m[11] * d[2];
+    frame.post.sunUv = cw > 0.05 ? [(cx / cw) * 0.5 + 0.5, (cy / cw) * 0.5 + 0.5] : null;
     return cam;
   }
 
   function render(t) {
-    const frame = director.evaluate(t);
+    const frame = director.evaluate(t, width / height);
     computeCamera(frame);
+    parts.upload(frame);
+    if (shadow.begin(frame)) {
+      parts.drawDepth(frame, shadow.viewProj);
+      terrain.drawDepth(frame, shadow.viewProj);
+      stone.drawDepth(frame, shadow.viewProj);
+      shadow.end();
+    }
     post.begin();
     gl.disable(gl.DEPTH_TEST);
     gl.depthMask(false);
     sky.draw(frame, cam);
     gl.depthMask(true);
+    terrain.draw(frame, cam, shadow);
     globe.draw(frame, cam);
-    boxes.draw(frame, cam, frame.boxData, frame.boxCount);
+    parts.draw(frame, cam, shadow);
     stone.draw(frame, cam);
     particles.draw(frame, cam, post.samples > 0);
     billboards.draw(frame, cam);
@@ -187,10 +194,9 @@ export async function createFilm(canvas, { tier = detectTier(), landUrl = '/film
     get renderScale() { return renderScale; },
     set renderScale(v) { renderScale = clamp(v, 0.5, 1); },
     project(p) {
-      // world -> CSS-relative [0..1] screen coords + visibility
       const v = m4.transform4(cam.viewProj, p);
       if (v[3] <= 0.001) return null;
-      return [v[0] / v[3] * 0.5 + 0.5, 0.5 - v[1] / v[3] * 0.5, v[3]];
+      return [(v[0] / v[3]) * 0.5 + 0.5, 0.5 - (v[1] / v[3]) * 0.5, v[3]];
     },
   };
 }

@@ -65,14 +65,26 @@ void main(){
   o = vec4(col, 1.0);
 }`;
 
+const DEPTH_FS = `#version 300 es
+precision highp float;
+void main(){}`;
+
 export function createStone(gl) {
   const mesh = buildStoneMesh();
   const prog = createProgram(gl, VS, FS, 'stone');
+  const depth = createProgram(gl, VS, DEPTH_FS, 'stone-depth');
   const pb = createBuffer(gl, mesh.pos);
   const nb = createBuffer(gl, mesh.nrm);
   const ib = createBuffer(gl, mesh.idx, gl.ELEMENT_ARRAY_BUFFER);
   const vao = createVAO(gl, [{ buffer: pb, loc: 0, size: 3 }, { buffer: nb, loc: 1, size: 3 }], ib);
   return {
+    drawDepth(frame, lightViewProj) {
+      const s = frame.stone;
+      if (!s.visible || s.reveal < 0.5) return;
+      depth.use().setAll({ uViewProj: lightViewProj, uModel: s.model });
+      gl.bindVertexArray(vao);
+      gl.drawElements(gl.TRIANGLES, mesh.count, gl.UNSIGNED_INT, 0);
+    },
     draw(frame, cam) {
       const s = frame.stone;
       if (!s.visible) return;

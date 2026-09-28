@@ -45,10 +45,31 @@ void main(){
   o = vec4(c / 12.0, 1.0);
 }`;
 
+const RAYS_FS = `#version 300 es
+precision highp float;
+in vec2 vUv;
+uniform sampler2D uTex;
+uniform vec2 uSun;
+uniform float uDecay, uDensity;
+out vec4 o;
+void main(){
+  vec2 d = (uSun - vUv) * uDensity / 40.0;
+  vec2 uv = vUv;
+  vec3 acc = vec3(0.0);
+  float w = 1.0;
+  for (int i = 0; i < 40; i++) {
+    uv += d;
+    acc += texture(uTex, uv).rgb * w;
+    w *= uDecay;
+  }
+  o = vec4(acc / 14.0, 1.0);
+}`;
+
 const GRADE_FS = `#version 300 es
 precision highp float;
 in vec2 vUv;
-uniform sampler2D uScene, uBloom;
+uniform sampler2D uScene, uBloom, uRays;
+uniform float uRaysAmt;
 uniform vec2 uRes;
 uniform float uBloomAmt, uExposure, uCA, uVignette, uGrain, uTime, uFlash, uFade, uBlurAmt, uLift, uSaturation;
 uniform vec3 uFlashCol, uShadowTint, uHighTint;
@@ -85,6 +106,7 @@ void main(){
     col = sampleScene(vUv);
   }
   col += texture(uBloom, vUv).rgb * uBloomAmt;
+  col += texture(uRays, vUv).rgb * uRaysAmt;
   col = 1.0 - exp(-max(col, 0.0) * uExposure);
   // split tone: cool shadows, warm highlights
   float l = dot(col, vec3(0.2126, 0.7152, 0.0722));
@@ -109,6 +131,8 @@ export function createPost(gl) {
   const down = createProgram(gl, FULLSCREEN_VS, DOWN_FS, 'bloom-down');
   const up = createProgram(gl, FULLSCREEN_VS, UP_FS, 'bloom-up');
   const grade = createProgram(gl, FULLSCREEN_VS, GRADE_FS, 'grade');
+  const rays = createProgram(gl, FULLSCREEN_VS, RAYS_FS, 'rays');
+  let raysT = null;
   const vao = gl.createVertexArray();
   const hdr = gl.ext.floatRT || gl.ext.halfRT;
   let ms = null, resolved = null, chain = [];
@@ -127,6 +151,9 @@ export function createPost(gl) {
     if (!ms.ok) { samples = 0; ms = createMSTarget(gl, w, h, false, 0); }
     resolved = createTarget(gl, w, h, hdr);
     if (!resolved.ok) resolved = createTarget(gl, w, h, false);
+    deleteTarget(gl, raysT);
+    raysT = createTarget(gl, Math.max(1, w >> 2), Math.max(1, h >> 2), hdr);
+    if (!raysT.ok) raysT = createTarget(gl, Math.max(1, w >> 2), Math.max(1, h >> 2), false);
     chain = [];
     let cw = w, ch = h;
     for (let i = 0; i < 5; i++) {
@@ -171,6 +198,11 @@ export function createPost(gl) {
         pass(down, t, { uTex: src.tex, uTexel: [1 / src.width, 1 / src.height], uThreshold: P.bloomThreshold, uPrefilter: i === 0 ? 1 : 0 });
         src = t;
       });
+      // light shafts from the thresholded quarter-res image, before the up-chain adds into it
+      const R = P.rays || 0;
+      if (R > 0.001 && P.sunUv) {
+        pass(rays, raysT, { uTex: chain[1].tex, uSun: P.sunUv, uDecay: 0.955, uDensity: 0.92 });
+      }
       gl.enable(gl.BLEND);
       gl.blendFunc(gl.ONE, gl.ONE);
       for (let i = chain.length - 1; i > 0; i--) {
@@ -179,7 +211,8 @@ export function createPost(gl) {
       }
       gl.disable(gl.BLEND);
       pass(grade, null, {
-        uScene: resolved.tex, uBloom: chain[0].tex, uRes: [gl.drawingBufferWidth, gl.drawingBufferHeight],
+        uScene: resolved.tex, uBloom: chain[0].tex, uRays: raysT.tex, uRaysAmt: (P.rays > 0.001 && P.sunUv) ? P.rays : 0,
+        uRes: [gl.drawingBufferWidth, gl.drawingBufferHeight],
         uBloomAmt: P.bloom, uExposure: P.exposure, uCA: P.ca, uVignette: P.vignette, uGrain: P.grain,
         uTime: frame.time, uFlash: P.flash, uFade: P.fade, uBlurAmt: P.blur, uBlurDir: P.blurDir,
         uZoomBlur: P.zoomBlur, uFlashCol: P.flashCol, uShadowTint: P.shadowTint, uHighTint: P.highTint,

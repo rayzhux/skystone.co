@@ -3,7 +3,6 @@ import { createFilm, detectTier } from './film.js';
 import { createOverlay } from './overlay.js';
 import { CHAPTERS, DURATION } from './director.js';
 
-const FPS = 24;
 const POSTER_T = 35.4;
 const params = new URLSearchParams(location.search);
 const EXPORT = params.has('export');
@@ -12,9 +11,22 @@ const reduceMQ = matchMedia('(prefers-reduced-motion: reduce)');
 const root = document.getElementById('film');
 if (root) boot().catch((e) => fail(e));
 
+// the poster is only created (and downloaded) when the live film cannot run
+function showPoster() {
+  if (!root.querySelector('img.film-poster')) {
+    const img = new Image(1920, 1080);
+    img.className = 'film-poster';
+    img.alt = '';
+    img.decoding = 'async';
+    img.src = '/film/poster.jpg';
+    root.prepend(img);
+  }
+  root.classList.add('is-fallback');
+}
+
 function fail(e) {
   console.warn('[film]', e && e.message ? e.message : e);
-  root.classList.add('is-fallback');
+  showPoster();
   document.querySelector('.player')?.setAttribute('hidden', '');
   window.__film = { ready: true, failed: true };
 }
@@ -64,10 +76,7 @@ async function boot() {
   });
   const segs = [...chaptersEl.children];
 
-  const tc = (sec) => {
-    const s = Math.floor(sec), f = Math.floor((sec - s) * FPS);
-    return `00:${String(s).padStart(2, '0')}:${String(f).padStart(2, '0')}`;
-  };
+  const tc = (sec) => `0:${String(Math.floor(sec)).padStart(2, '0')}`;
   const chapterAt = (sec) => {
     let i = 0;
     for (let k = 0; k < CHAPTERS.length; k++) if (sec >= CHAPTERS[k].t) i = k;
@@ -92,15 +101,16 @@ async function boot() {
       chapterEl.textContent = `${String(ci + 1).padStart(2, '0')} · ${CHAPTERS[ci].label}`;
       segs.forEach((s, i) => s.classList.toggle('is-now', i === ci));
     }
-    coordsEl.textContent = frame.hud.coords || 'Skystone Partners · Dubai';
+    if (coordsEl) coordsEl.textContent = 'Skystone Partners · Dubai';
     const sec = Math.floor(t);
     if (sec !== lastSecond) {
       lastSecond = sec;
       track.setAttribute('aria-valuenow', String(sec));
       track.setAttribute('aria-valuetext', `${sec} seconds, ${CHAPTERS[ci].label}`);
     }
-    lockup.classList.toggle('is-quiet', t >= 32.5 && t < 39.7);
-    document.documentElement.classList.toggle('film-light', t >= 23 && t < 24 && !covered);
+    // the page title owns the opening; from the first chapter on, the film's own titles take the frame
+    lockup.classList.toggle('is-quiet', t >= 8.2 && t < 39.7);
+    document.documentElement.classList.toggle('film-light', t >= 22 && t < 23.6 && !covered);
   }
 
   // compile every pipeline during the calm opening seconds, one shot per frame, so no cut ever hitches
@@ -269,7 +279,7 @@ async function boot() {
     e.preventDefault();
     playing = false;
     if (audio && soundOn) audio.pause();
-    root.classList.add('is-fallback');
+    showPoster();
     player.hidden = true;
   });
 

@@ -387,9 +387,11 @@ function buildCues() {
   at(4.0, 1.9, (ac, G, b, w) => I.whoosh(ac, G, b, w, 1.9, { from: 250, to: 4200, level: 0.16 }));
   at(4.0, 4.2, (ac, G, b, w, o) => I.pad(ac, G, b, w, o, 4.2, CHORDS.Bbmaj7, { cutoff: 1500, level: 0.03, attack: 0.9 }));
   at(4.0, 4.0, (ac, G, b, w, o) => I.sub(ac, G, b, w, o, 4.0, 'Bb1', { level: 0.075, attack: 0.6, release: 0.5 }));
-  hit(5.9, (ac, G, b, w) => I.ping(ac, G, b, w, 'A5', { level: 0.07, decay: 1.2, pan: -0.35 }));
-  hit(7.58, (ac, G, b, w) => I.ping(ac, G, b, w, 'D6', { level: 0.07, decay: 1.2, pan: 0.35 }));
-  for (let t = 5.95; t < 7.7; t += BEAT / 4) hit(t, (ac, G, b, w) => I.tick(ac, G, b, w, { level: 0.02, f: 2800 + (t - 5.95) * 500 }));
+  hit(5.9, (ac, G, b, w) => I.ping(ac, G, b, w, 'A5', { level: 0.07, decay: 1.2, pan: 0 }));
+  ['D6', 'E6', 'F6', 'A6', 'C7'].forEach((n, k) => {
+    const tk = 5.85 + (k * 0.13 + 0.42) * 1.9;
+    hit(tk, (ac, G, b, w) => I.ping(ac, G, b, w, n, { level: 0.045, decay: 0.9, pan: (k - 2) * 0.35, ratio: 3.01, index: 0.6 }));
+  });
   for (let t = 6.0, i = 0; t < 8.0; t += BEAT / 2, i++) hit(t, (ac, G, b, w) => I.pluck(ac, G, b, w, ARP.Bbmaj7[i % 8], { level: 0.03, decay: 0.28, bright: 1800 + i * 90, pan: i % 2 ? 0.35 : -0.35 }));
   at(7.0, 1.0, (ac, G, b, w) => I.riser(ac, G, b, w, 1.0, { level: 0.16 }));
 
@@ -412,6 +414,7 @@ function buildCues() {
     }
   }
   hit(8.62, (ac, G, b, w) => { I.bell(ac, G, b, w, 'A5', { level: 0.05, decay: 2.2 }); I.bell(ac, G, b, w, 'E6', { level: 0.03, decay: 2.2 }); });
+  for (let i = 0; i < 7; i++) hit(8.35 + i * 0.25 + 0.55, (ac, G, b, w) => I.tom(ac, G, b, w, { level: 0.32 + i * 0.03, f: 84 - i * 4 }));
   at(8.55, 1.6, (ac, G, b, w) => I.whoosh(ac, G, b, w, 1.6, { from: 180, to: 2600, level: 0.1, panFrom: -0.3, panTo: 0.3 }));
   at(12.0, 1.8, (ac, G, b, w) => I.whoosh(ac, G, b, w, 1.8, { from: 3600, to: 300, level: 0.1, panFrom: 0.5, panTo: -0.5 }));
   const pr = rng(19);
@@ -421,7 +424,9 @@ function buildCues() {
     hit(t, (ac, G, b, w) => I.ping(ac, G, b, w, n, { level: 0.03, decay: 0.7, pan: pr() * 1.6 - 0.8, ratio: 2.76, index: 0.9 }));
   }
   at(16.0, 1.1, (ac, G, b, w) => I.whoosh(ac, G, b, w, 1.1, { from: 2600, to: 160, level: 0.14 }));
-  for (let i = 0; i < 14; i++) hit(17.55 + i * 0.125, (ac, G, b, w) => I.clack(ac, G, b, w, { level: 0.2, pitch: i }));
+  [16.95, 17.12].forEach((t) => hit(t, (ac, G, b, w) => I.tom(ac, G, b, w, { level: 0.55, f: 70 })));
+  for (let i = 0; i < 14; i++) hit(17.55 + i * 0.125, (ac, G, b, w) => { I.clack(ac, G, b, w, { level: 0.16, pitch: -4 + i * 0.6 }); I.tom(ac, G, b, w, { level: 0.14, f: 150 + i * 4 }); });
+  hit(19.45, (ac, G, b, w) => { I.impact(ac, G, b, w, { level: 0.55, size: 0.7 }); I.bell(ac, G, b, w, 'D6', { level: 0.06, decay: 2.4 }); });
   at(19.0, 1.0, (ac, G, b, w) => I.riser(ac, G, b, w, 1.0, { level: 0.18 }));
   for (let t = 19.0, i = 0; t < 20; t += i < 4 ? BEAT / 4 : BEAT / 8, i++) hit(t, (ac, G, b, w) => I.clap(ac, G, b, w, { level: 0.05 + i * 0.012 }));
 
@@ -447,7 +452,7 @@ function buildCues() {
   }
   hit(20.0, (ac, G, b, w) => I.impact(ac, G, b, w, { level: 0.9 }));
   [21.0, 22.0].forEach((t) => hit(t, (ac, G, b, w) => I.impact(ac, G, b, w, { level: 0.45, size: 0.6 })));
-  [23.0, 23.5, 24.0].forEach((t, i) => hit(t, (ac, G, b, w) => {
+  [22.0, 22.8, 23.6].forEach((t, i) => hit(t, (ac, G, b, w) => {
     I.tom(ac, G, b, w, { level: 0.5, f: 150 - i * 15 });
     CHORDS[i === 1 ? 'Bbmaj7' : 'Gm9'].forEach((n) => I.pluck(ac, G, b, w, n.replace(/\d/, (d) => String(+d + 1)), { level: 0.03, decay: 0.35, bright: 4200, send: 0.4 }));
   }));

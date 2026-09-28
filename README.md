@@ -1,6 +1,6 @@
 # skystone.co
 
-Marketing site for **Skystone Partners** — private China–Gulf advisory in Dubai.
+Marketing site for **Skystone Partners**: investment advisory and management consulting, Dubai.
 
 The hero is a 40-second brand film rendered live in the browser with WebGL2 — no video file, no
 libraries, no build step. Everything else on the page is cut from the same footage.
@@ -12,8 +12,8 @@ Deployed as a Cloudflare Worker with Static Assets. Pushes to `main` deploy to p
 ```
 public/
   index.html            # the one-pager
-  styles.css            # dusk palette, type system, film overlay, sections
-  site.js               # nav, reveals, clocks + office hours, process playhead, frame strip
+  styles.css            # Geist type, three colours (ink, paper, one accent), film overlay, sections
+  site.js               # nav, reveals, office hours, copy address, process playhead, contact plate
   film/
     main.js             # boots the reel, player controls, visibility, adaptive resolution
     film.js             # engine: GL context, renderers, camera rig, render order
@@ -21,8 +21,11 @@ public/
     overlay.js          # typography + vector layer, keyed to the same clock
     audio.js            # the score: WebAudio synthesis, live + offline render
     shapes.js           # particle target shapes (built in shapes-worker.js)
-    world.js            # deterministic city, network, neural cloud, globe, stone
-    sky.js particles.js boxes.js lines.js billboards.js globe.js stone.js post.js
+    world.js            # places, the monolith field, the arch, the landscape, the stone
+    parts.js            # instanced stone parts (blocks, voussoirs, keystone), fake bevels, materials
+    terrain.js          # dunes and the contour landscape
+    shadow.js           # sun shadow map (PCF), fitted per shot
+    sky.js particles.js lines.js billboards.js globe.js stone.js post.js
     gl.js math.js       # thin WebGL2 + math helpers
     land.png            # 1-bit land mask for the globe (Natural Earth 1:50m)
     poster.jpg og.jpg   # no-WebGL fallback still and social card, rendered from the film
@@ -34,14 +37,18 @@ wrangler.jsonc          # Cloudflare Worker config
 ## How the film works
 
 One clock drives everything. `director.evaluate(t)` is a pure function from film time to a frame
-(camera, sky, particle morph, boxes, lines, words-in-the-world, stone, post), and `overlay.update(t)`
+(camera, sky, terrain, particle morph, stone parts, shadows, lines, words-in-the-world, stone, post), and `overlay.update(t)`
 does the same for the DOM typography. That is what makes the reel pausable, scrubbable, loopable and
 exportable frame-exact.
 
-- 65k GPU particles morph between shapes stored in a float texture (desert → globe → site plan →
-  data network → neural cloud → galaxy → a single point → the stone).
-- Towers are instanced boxes that mirror the dusk sky; floors assemble with overshoot on 16th notes.
-- Post: MSAA, dual-filter bloom, exponential tone map, split-tone grade, grain, whip/zoom blur.
+- 65k GPU particles morph between shapes stored in a float texture (desert → globe → landscape →
+  dust bursts → vortex → a single point → the stone).
+- Chapters: Horizon, Reach (globe network from Dubai), Investment (seven monoliths rising),
+  Insights (a contour landscape drawing itself at night), Implementation (an arch assembled stone by
+  stone until the keystone locks), what we do, four stages, Skystone.
+- Stone is instanced geometry with bevels, polished basalt / honed travertine and a real shadow map.
+- Post: MSAA, dual-filter bloom, god rays from the sun, exponential tone map, split-tone grade, grain,
+  whip/zoom blur.
 - Quality tiers by device, plus adaptive resolution that sheds pixels when frames run long.
 - `prefers-reduced-motion`: no autoplay; the end card holds as a still with a Play button.
 - No WebGL2: `film/poster.jpg` stands in and the player is hidden.
