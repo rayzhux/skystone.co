@@ -2,11 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <title>Skystone Partners — Private China–Gulf Advisory · Dubai</title>
-  <meta name="description" content="Skystone Partners — private advisory connecting Gulf principals with China's leading firms across real estate, artificial intelligence, and advanced manufacturing. Dubai, founded 2024." />
-  <meta name="theme-color" content="#0E0D08" />
-
+  <meta name="description" content="Skystone Partners brings China's leading firms into the work of Gulf principals — across real estate and construction, artificial intelligence and advanced manufacturing. Private advisory, Dubai, founded 2024." />
+  <meta name="theme-color" content="#07080D" />
   <link rel="canonical" href="https://skystone.co/" />
 
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -15,24 +14,39 @@
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Skystone Partners" />
   <meta property="og:title" content="Skystone Partners — Private China–Gulf Advisory · Dubai" />
-  <meta property="og:description" content="Private advisory connecting Gulf principals with China's leading firms across real estate, AI, and advanced manufacturing. Founded 2024, Dubai." />
+  <meta property="og:description" content="Gulf capital. China's leading firms. One partner, end to end — across real estate, AI and advanced manufacturing." />
   <meta property="og:url" content="https://skystone.co/" />
-  <meta property="og:image" content="https://skystone.co/images/hero-shanghai-bund.jpg" />
-  <meta property="og:image:width" content="2400" />
-  <meta property="og:image:height" content="1376" />
-  <meta property="og:image:alt" content="The Bund, Shanghai, at dusk" />
+  <meta property="og:image" content="https://skystone.co/film/og.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="A polished standing stone in the desert at dusk, the sun on the horizon behind it" />
   <meta property="og:locale" content="en_US" />
-
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Skystone Partners — Private China–Gulf Advisory · Dubai" />
-  <meta name="twitter:description" content="Private advisory connecting Gulf principals with China's leading firms across real estate, AI, and advanced manufacturing." />
-  <meta name="twitter:image" content="https://skystone.co/images/hero-shanghai-bund.jpg" />
+  <meta name="twitter:description" content="Gulf capital. China's leading firms. One partner, end to end." />
+  <meta name="twitter:image" content="https://skystone.co/film/og.jpg" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif&family=Inter+Tight:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="preload" as="image" href="/images/hero-shanghai-bund.jpg" fetchpriority="high" />
-  <link rel="stylesheet" href="styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..800&family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..700;1,6..96,400..700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/styles.css" />
+  <link rel="modulepreload" href="/film/main.js" />
+  <link rel="modulepreload" href="/film/film.js" />
+  <link rel="modulepreload" href="/film/director.js" />
+  <link rel="modulepreload" href="/film/overlay.js" />
+  <link rel="modulepreload" href="/film/math.js" />
+  <link rel="modulepreload" href="/film/gl.js" />
+  <link rel="modulepreload" href="/film/world.js" />
+  <link rel="modulepreload" href="/film/shapes.js" />
+  <link rel="modulepreload" href="/film/sky.js" />
+  <link rel="modulepreload" href="/film/particles.js" />
+  <link rel="modulepreload" href="/film/boxes.js" />
+  <link rel="modulepreload" href="/film/lines.js" />
+  <link rel="modulepreload" href="/film/billboards.js" />
+  <link rel="modulepreload" href="/film/stone.js" />
+  <link rel="modulepreload" href="/film/globe.js" />
+  <link rel="modulepreload" href="/film/post.js" />
+  <script>document.documentElement.classList.add('js');</script>
 
   <script type="application/ld+json">
   {
@@ -40,6 +54,8 @@
     "@type": "ProfessionalService",
     "name": "Skystone Partners",
     "url": "https://skystone.co",
+    "logo": "https://skystone.co/favicon.svg",
+    "image": "https://skystone.co/film/og.jpg",
     "description": "Private advisory connecting Gulf principals with China's leading firms across real estate, artificial intelligence, and advanced manufacturing.",
     "foundingDate": "2024",
     "address": {
@@ -60,292 +76,282 @@
   </script>
 </head>
 <body>
+<a class="skip" href="#practice">Skip to content</a>
 
-<!-- =============== HERO =============== -->
-<section class="hero">
-  <img class="hero-photo" src="/images/hero-shanghai-bund.jpg" alt="The Bund, Shanghai, at dusk" fetchpriority="high" decoding="async" />
-  <div class="hero-overlay-1"></div>
-  <div class="hero-overlay-2"></div>
+<!-- =============== NAV =============== -->
+<header class="nav" data-nav>
+  <a href="#top" class="wordmark" aria-label="Skystone Partners, back to top">
+    <span class="wordmark-name">Skystone</span><span class="wordmark-sun" aria-hidden="true"></span>
+  </a>
+  <nav class="nav-links" id="nav-links" aria-label="Primary">
+    <a href="#practice">Practice</a>
+    <a href="#disciplines">Disciplines</a>
+    <a href="#process">Process</a>
+    <a href="#markets">Markets</a>
+    <a href="#contact">Contact</a>
+  </nav>
+  <a class="nav-cta" href="#contact">Begin a conversation <span aria-hidden="true">→</span></a>
+  <button class="nav-menu" type="button" aria-expanded="false" aria-controls="nav-links">Menu</button>
+</header>
 
-  <header class="nav">
-    <a href="#" class="wordmark">
-      <span class="wordmark-name">Skystone</span>
-      <span class="wordmark-sub">— Partners</span>
-    </a>
-    <nav class="nav-links" aria-label="Primary">
-      <a href="#services">Services</a>
-      <a href="#process">Process</a>
-      <a href="#about">About</a>
-      <a href="#contact">Contact</a>
-    </nav>
-    <div class="nav-status">
-      <span class="nav-status-dot" aria-hidden="true"></span>
-      Taking on new engagements
+<main id="top">
+
+<!-- =============== THE REEL =============== -->
+<div class="stage">
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="film" id="film">
+      <img class="film-poster" src="/film/poster.jpg" alt="" width="1920" height="1080" decoding="async" />
+      <canvas class="film-canvas" aria-hidden="true"></canvas>
+      <div class="film-overlay" aria-hidden="true"></div>
+      <div class="film-veil" aria-hidden="true"></div>
     </div>
-  </header>
 
-  <a class="skip-link" href="#about">Skip to content</a>
-  <div class="hero-rule"></div>
-
-  <div class="hero-eyebrow">
-    <span class="hero-eyebrow-stroke"></span>
-    <span>Dubai · China–Gulf Advisory</span>
-  </div>
-
-  <div class="hero-coordinates">
-    <div>N 25°11′49″</div>
-    <div>E 55°16′26″</div>
-    <div class="faint">Meydan, Dubai</div>
-  </div>
-
-  <div class="hero-headline">
-    <h1 aria-label="Investment. Insights. Implementation.">
-      <span class="word" aria-hidden="true">Investment.</span> <em class="word" aria-hidden="true">Insights.</em><br />
-      <span class="word" aria-hidden="true">Implementation.</span>
-    </h1>
-  </div>
-
-  <div class="hero-lower">
-    <p class="hero-sub">
-      Private advisory connecting Gulf principals with China's leading firms — across real estate, artificial intelligence, and advanced manufacturing.
-    </p>
-    <div class="hero-meta">
-      <div class="hero-meta-strong">Private advisory · founded 2024</div>
-      <div>Meydan · Nad Al Sheba</div>
+    <div class="hero-lockup">
+      <p class="eyebrow">Skystone Partners · Private China–Gulf advisory · Dubai</p>
+      <h1 id="hero-title" class="hero-title">Gulf capital. China’s leading firms. <em>One partner, end to end.</em></h1>
     </div>
-    <a class="cta-pill" href="#contact">
-      Begin a conversation
-      <span class="cta-pill-dot" aria-hidden="true">↓</span>
-    </a>
-  </div>
 
-  <div class="hero-bottom-bar">
-    <span>The Bund · Shanghai</span>
-    <span>Dubai · GCC</span>
-    <span>2026</span>
-    <span>↓ Scroll</span>
-  </div>
-</section>
-
-<!-- =============== ABOUT =============== -->
-<section id="about" class="commitment">
-  <div class="grid-12">
-    <div class="kicker-col">
-      <div class="kicker-rule">§ 01 · About</div>
-    </div>
-    <div class="commitment-body">
-      <h2 class="display">
-        A bridge between the Gulf<br />
-        and <em class="ochre-deep">China's</em> leading firms.
-      </h2>
-      <div class="commitment-paragraphs">
-        <p><span class="dropcap">S</span>kystone exists to do one thing well: bring the capability of China's most accomplished firms into the work of Gulf principals — across real estate and construction, artificial intelligence, and advanced manufacturing. The work is retained, private, and selective.</p>
-        <p><span class="dropcap">A</span> decade operating inside Dubai's most exacting institutions sits behind the practice, alongside longstanding relationships across Mainland China. Native Mandarin fluency and deep ties within China's construction, technology, and manufacturing sectors ensure cross-border execution succeeds.</p>
-        <p>Skystone advises principals and family offices on capital deployment, partner selection, and end-to-end implementation — so clients don't have to navigate it themselves.</p>
-        <p class="signature">— Skystone Partners</p>
+    <div class="player" role="group" aria-label="Brand film" hidden>
+      <button class="pl-btn pl-play" type="button" aria-label="Pause film" data-play>
+        <svg viewBox="0 0 16 16" aria-hidden="true"><path class="i-pause" d="M4 3h3v10H4zM9 3h3v10H9z"/><path class="i-play" d="M4 2.5v11l9-5.5z"/></svg>
+      </button>
+      <button class="pl-btn pl-sound" type="button" aria-pressed="false" data-sound>
+        <span class="pl-eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+        <span class="pl-sound-label">Sound off</span>
+      </button>
+      <div class="pl-readout" aria-hidden="true">
+        <span class="pl-chapter" data-chapter>01 · Horizon</span>
+        <span class="pl-coords" data-coords>25.2048° N · 55.2708° E</span>
       </div>
+      <div class="pl-track" role="slider" tabindex="0" aria-label="Film position" aria-valuemin="0" aria-valuemax="40" aria-valuenow="0" aria-valuetext="0 seconds, Horizon" data-track>
+        <div class="pl-chapters" data-chapters></div>
+        <div class="pl-fill" data-fill></div>
+        <div class="pl-head" data-head></div>
+      </div>
+      <div class="pl-time" aria-hidden="true"><span data-now>00:00:00</span><span class="pl-dur"> / 00:40:00</span></div>
     </div>
-  </div>
-</section>
 
-<!-- =============== IMAGE BAND — Great Wall =============== -->
-<section class="band" aria-label="Beijing">
-  <img src="/images/great-wall-autumn.jpg" alt="Great Wall of China in autumn" loading="lazy" decoding="async" />
-  <div class="band-overlay"></div>
-</section>
+    <p class="sr-only" id="film-description">
+      A forty-second film rendered live in your browser. Dusk over the desert outside Dubai; the sand lifts into a globe and a line runs 6,428 kilometres from Dubai to Shanghai. A city rises out of a drafting grid under the word Investment; night falls and a network of light draws itself across the rooftops for Insights; a tower assembles floor by floor for Implementation. Six disciplines and four stages cut past, everything collapses into a single point of light, and a polished standing stone forms in the desert: Skystone.
+    </p>
+  </section>
 
-<!-- =============== SERVICES =============== -->
-<section id="services" class="services">
-  <div class="grid-12 services-head">
-    <div class="kicker-col">
-      <div class="kicker-rule">§ 02 · Services</div>
+  <!-- =============== 01 PRACTICE =============== -->
+  <section id="practice" class="practice" aria-labelledby="practice-title">
+    <div class="wrap">
+      <p class="kicker"><span class="kicker-n">01</span> The practice</p>
+      <h2 id="practice-title" class="display reveal">Not introductions. <em>Delivery.</em></h2>
+      <p class="lede reveal">Skystone exists to do one thing well: bring the capability of China’s most accomplished firms into the work of Gulf principals — across real estate and construction, artificial intelligence, and advanced manufacturing.</p>
+      <div class="practice-cols reveal">
+        <p>A decade inside Dubai’s most exacting institutions sits behind the practice, alongside longstanding relationships across Mainland China. Native Mandarin fluency and deep ties within China’s construction, technology and manufacturing sectors are what make cross-border execution land.</p>
+        <p>We advise principals and family offices on capital deployment, partner selection and end-to-end implementation. The work is retained, private and selective — so you never have to navigate it alone.</p>
+      </div>
+
+      <dl class="facts">
+        <div class="fact reveal">
+          <dt>Dubai to Shanghai</dt>
+          <dd><span class="fact-num" data-count="6428">6,428</span><span class="fact-unit">km</span></dd>
+        </div>
+        <div class="fact reveal">
+          <dt>Shanghai runs ahead</dt>
+          <dd><span class="fact-num">+4</span><span class="fact-unit">hours</span></dd>
+        </div>
+        <div class="fact reveal">
+          <dt>Sectors</dt>
+          <dd><span class="fact-num" data-count="3">3</span><span class="fact-unit">real estate · AI · manufacturing</span></dd>
+        </div>
+        <div class="fact reveal">
+          <dt>Stages, first meeting to delivery</dt>
+          <dd><span class="fact-num" data-count="4">4</span><span class="fact-unit">retained end to end</span></dd>
+        </div>
+      </dl>
+      <p class="clocks" aria-live="off">
+        <span class="clock"><span class="clock-city">Dubai</span> <time data-clock="Asia/Dubai">--:--</time></span>
+        <span class="clock-sep" aria-hidden="true"></span>
+        <span class="clock"><span class="clock-city">Shanghai</span> <time data-clock="Asia/Shanghai">--:--</time></span>
+      </p>
     </div>
-    <h2 class="display services-title">Six disciplines, three sectors, one standard.</h2>
-  </div>
+  </section>
+</div>
 
-  <div class="services-grid">
-    <article class="service">
-      <div class="service-n">01</div>
-      <div class="service-body">
+<!-- =============== 02 DISCIPLINES =============== -->
+<section id="disciplines" class="disciplines" aria-labelledby="disciplines-title">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="kicker kicker-dark"><span class="kicker-n">02</span> Disciplines</p>
+      <h2 id="disciplines-title" class="display reveal">Six disciplines. Three sectors. <em>One standard.</em></h2>
+    </div>
+    <ol class="disc-grid">
+      <li class="disc reveal">
+        <button class="disc-still" type="button" data-seek="20" aria-label="Play the Real Estate chapter of the film">
+          <img src="/film/stills/real-estate.webp" alt="" width="960" height="600" loading="lazy" decoding="async" />
+          <span class="disc-tc" aria-hidden="true">00:20:14</span>
+        </button>
+        <span class="disc-n">01</span>
         <h3>Real Estate &amp; Construction</h3>
-        <p>Acquisition, development feasibility, and end-to-end delivery — with China's top contractors and developers engaged early for cost, buildability, and execution.</p>
-      </div>
-    </article>
-    <article class="service">
-      <div class="service-n">02</div>
-      <div class="service-body">
+        <p>Acquisition, development feasibility and end-to-end delivery — with China’s top contractors and developers engaged early for cost, buildability and execution.</p>
+      </li>
+      <li class="disc reveal">
+        <button class="disc-still" type="button" data-seek="21" aria-label="Play the Artificial Intelligence chapter of the film">
+          <img src="/film/stills/ai.webp" alt="" width="960" height="600" loading="lazy" decoding="async" />
+          <span class="disc-tc" aria-hidden="true">00:21:19</span>
+        </button>
+        <span class="disc-n">02</span>
         <h3>Artificial Intelligence</h3>
-        <p>Partner selection, joint-venture structuring, and deployment for AI labs, model providers, and applied-AI firms entering the Gulf — or backed by Gulf capital into China.</p>
-      </div>
-    </article>
-    <article class="service">
-      <div class="service-n">03</div>
-      <div class="service-body">
+        <p>Partner selection, joint-venture structuring and deployment for AI labs, model providers and applied-AI firms entering the Gulf — or backed by Gulf capital into China.</p>
+      </li>
+      <li class="disc reveal">
+        <button class="disc-still" type="button" data-seek="22" aria-label="Play the Advanced Manufacturing chapter of the film">
+          <img src="/film/stills/manufacturing.webp" alt="" width="960" height="600" loading="lazy" decoding="async" />
+          <span class="disc-tc" aria-hidden="true">00:22:12</span>
+        </button>
+        <span class="disc-n">03</span>
         <h3>Advanced Manufacturing</h3>
-        <p>Sourcing, technology transfer, and industrial-park engagements with leading Chinese manufacturers — robotics, EV, semiconductors, and clean-energy supply chains.</p>
-      </div>
-    </article>
-    <article class="service">
-      <div class="service-n">04</div>
-      <div class="service-body">
+        <p>Sourcing, technology transfer and industrial-park engagements with leading Chinese manufacturers — robotics, EV, semiconductors and clean-energy supply chains.</p>
+      </li>
+      <li class="disc reveal">
+        <button class="disc-still" type="button" data-seek="8" aria-label="Play the Investment chapter of the film">
+          <img src="/film/stills/investment.webp" alt="" width="960" height="600" loading="lazy" decoding="async" />
+          <span class="disc-tc" aria-hidden="true">00:10:21</span>
+        </button>
+        <span class="disc-n">04</span>
         <h3>Investment Advisory</h3>
-        <p>Underwriting, structuring, and sourcing across sectors. Hold-period analysis and capital-deployment strategy benchmarked to the principal's horizon.</p>
-      </div>
-    </article>
-    <article class="service">
-      <div class="service-n">05</div>
-      <div class="service-body">
+        <p>Underwriting, structuring and sourcing across sectors. Hold-period analysis and capital-deployment strategy, benchmarked to the principal’s horizon.</p>
+      </li>
+      <li class="disc reveal">
+        <button class="disc-still" type="button" data-seek="16" aria-label="Play the Implementation chapter of the film">
+          <img src="/film/stills/implementation.webp" alt="" width="960" height="600" loading="lazy" decoding="async" />
+          <span class="disc-tc" aria-hidden="true">00:19:08</span>
+        </button>
+        <span class="disc-n">05</span>
         <h3>Implementation &amp; Oversight</h3>
-        <p>Owner's representation from first agreement through delivery — managing counterparties, consultants, and contractors so commitments are met as specified.</p>
-      </div>
-    </article>
-    <article class="service">
-      <div class="service-n">06</div>
-      <div class="service-body">
+        <p>Owner’s representation from first agreement through delivery — managing counterparties, consultants and contractors so commitments are met as specified.</p>
+      </li>
+      <li class="disc reveal">
+        <button class="disc-still" type="button" data-seek="12" aria-label="Play the Insights chapter of the film">
+          <img src="/film/stills/insights.webp" alt="" width="960" height="600" loading="lazy" decoding="async" />
+          <span class="disc-tc" aria-hidden="true">00:15:00</span>
+        </button>
+        <span class="disc-n">06</span>
         <h3>Strategic Insights</h3>
-        <p>Periodic notes on China–Gulf capital flows, technology transfer, and cross-border execution — written for clients.</p>
-      </div>
-    </article>
+        <p>Periodic notes on China–Gulf capital flows, technology transfer and cross-border execution — written for clients.</p>
+      </li>
+    </ol>
   </div>
 </section>
 
-<!-- =============== PROCESS =============== -->
-<section id="process" class="process">
-  <div class="grid-12 process-head">
-    <div class="kicker-col dark">
-      <div class="kicker-rule">§ 03 · Process</div>
-    </div>
-    <h2 class="display process-title">
-      <em>Four stages,</em> over long horizons.
-    </h2>
+<!-- =============== THE REEL, FRAME BY FRAME =============== -->
+<section class="reel" aria-labelledby="reel-title">
+  <div class="wrap reel-head">
+    <p class="kicker kicker-dark"><span class="kicker-n">—</span> The reel, frame by frame</p>
+    <h2 id="reel-title" class="reel-title reveal">Forty seconds, rendered live in your browser. <em>Pick a frame to jump in.</em></h2>
   </div>
-
-  <div class="process-grid">
-    <article class="stage">
-      <div class="stage-n">I</div>
-      <h3>Initial Consultation</h3>
-      <p>A single 90-minute meeting at our office or yours. No charge, no obligation.</p>
-      <div class="stage-foot"><span></span>Stage I</div>
-    </article>
-    <article class="stage">
-      <div class="stage-n">II</div>
-      <h3>Position Paper</h3>
-      <p>A written brief: opportunity, capital structure, partner shortlist, and go/no-go recommendation.</p>
-      <div class="stage-foot"><span></span>Stage II</div>
-    </article>
-    <article class="stage">
-      <div class="stage-n">III</div>
-      <h3>Diligence &amp; Partner Engagement</h3>
-      <p>Counterparties engaged, terms negotiated, specifications locked. Chinese partners brought in early — for cost, buildability, or technology fit.</p>
-      <div class="stage-foot"><span></span>Stage III</div>
-    </article>
-    <article class="stage">
-      <div class="stage-n">IV</div>
-      <h3>Implementation &amp; Oversight</h3>
-      <p>On-the-ground presence, monthly reports, quarterly reviews — through delivery and the post-completion period.</p>
-      <div class="stage-foot"><span></span>Stage IV</div>
-    </article>
+  <div class="reel-strip" data-strip>
+    <ol class="reel-track" data-strip-track>
+      <li><button type="button" class="frame" data-seek="0"><img src="/film/stills/f1.webp" alt="" width="640" height="360" loading="lazy" decoding="async" /><span class="frame-meta"><span class="frame-tc">00:00</span><span class="frame-name">Horizon</span></span></button></li>
+      <li><button type="button" class="frame" data-seek="4"><img src="/film/stills/f2.webp" alt="" width="640" height="360" loading="lazy" decoding="async" /><span class="frame-meta"><span class="frame-tc">00:04</span><span class="frame-name">The route</span></span></button></li>
+      <li><button type="button" class="frame" data-seek="8"><img src="/film/stills/f3.webp" alt="" width="640" height="360" loading="lazy" decoding="async" /><span class="frame-meta"><span class="frame-tc">00:08</span><span class="frame-name">Investment</span></span></button></li>
+      <li><button type="button" class="frame" data-seek="12"><img src="/film/stills/f4.webp" alt="" width="640" height="360" loading="lazy" decoding="async" /><span class="frame-meta"><span class="frame-tc">00:12</span><span class="frame-name">Insights</span></span></button></li>
+      <li><button type="button" class="frame" data-seek="16"><img src="/film/stills/f5.webp" alt="" width="640" height="360" loading="lazy" decoding="async" /><span class="frame-meta"><span class="frame-tc">00:16</span><span class="frame-name">Implementation</span></span></button></li>
+      <li><button type="button" class="frame" data-seek="20"><img src="/film/stills/f6.webp" alt="" width="640" height="360" loading="lazy" decoding="async" /><span class="frame-meta"><span class="frame-tc">00:20</span><span class="frame-name">Six disciplines</span></span></button></li>
+      <li><button type="button" class="frame" data-seek="24.5"><img src="/film/stills/f7.webp" alt="" width="640" height="360" loading="lazy" decoding="async" /><span class="frame-meta"><span class="frame-tc">00:24</span><span class="frame-name">Four stages</span></span></button></li>
+      <li><button type="button" class="frame" data-seek="28"><img src="/film/stills/f8.webp" alt="" width="640" height="360" loading="lazy" decoding="async" /><span class="frame-meta"><span class="frame-tc">00:28</span><span class="frame-name">Skystone</span></span></button></li>
+    </ol>
   </div>
 </section>
 
-<!-- =============== PARTNERS =============== -->
-<section class="recognition">
-  <div class="grid-12 recognition-head">
-    <div class="kicker-col dark">
-      <div class="kicker-rule">§ 04 · Partners</div>
+<!-- =============== 03 PROCESS =============== -->
+<section id="process" class="process" aria-labelledby="process-title" data-process>
+  <div class="wrap">
+    <p class="kicker"><span class="kicker-n">03</span> Process</p>
+    <h2 id="process-title" class="display reveal">Four stages, <em>over long horizons.</em></h2>
+    <div class="timeline">
+      <div class="tl-rail" aria-hidden="true"><div class="tl-fill"></div><div class="tl-head"></div></div>
+      <ol class="tl-stages">
+        <li class="tl-stage">
+          <span class="tl-n" aria-hidden="true">I</span>
+          <h3><span class="sr-only">Stage one: </span>Initial Consultation</h3>
+          <p>A single 90-minute meeting at our office or yours. No charge, no obligation.</p>
+        </li>
+        <li class="tl-stage">
+          <span class="tl-n" aria-hidden="true">II</span>
+          <h3><span class="sr-only">Stage two: </span>Position Paper</h3>
+          <p>A written brief: opportunity, capital structure, partner shortlist and a clear go / no-go recommendation.</p>
+        </li>
+        <li class="tl-stage">
+          <span class="tl-n" aria-hidden="true">III</span>
+          <h3><span class="sr-only">Stage three: </span>Diligence &amp; Partner Engagement</h3>
+          <p>Counterparties engaged, terms negotiated, specifications locked. Chinese partners brought in early — for cost, buildability or technology fit.</p>
+        </li>
+        <li class="tl-stage">
+          <span class="tl-n" aria-hidden="true">IV</span>
+          <h3><span class="sr-only">Stage four: </span>Implementation &amp; Oversight</h3>
+          <p>On-the-ground presence, monthly reports and quarterly reviews — through delivery and the post-completion period.</p>
+        </li>
+      </ol>
     </div>
-    <p class="recognition-lede">
-      Representative firms in the markets we serve — across construction, technology, and manufacturing.
-    </p>
-  </div>
-
-  <div class="marquee">
-    <div class="marquee-track">
-      <!-- set 1 -->
-      <div class="logo"><span class="logo-initials">CS</span><span class="logo-name">China State Construction</span></div>
-      <div class="logo"><span class="logo-initials">CH</span><span class="logo-name">China Harbour</span></div>
-      <div class="logo"><span class="logo-initials">VK</span><span class="logo-name">Vanke</span></div>
-      <div class="logo"><span class="logo-initials">CS</span><span class="logo-name">China State Construction</span></div>
-      <div class="logo"><span class="logo-initials">CH</span><span class="logo-name">China Harbour</span></div>
-      <div class="logo"><span class="logo-initials">VK</span><span class="logo-name">Vanke</span></div>
-      <!-- set 2 (duplicate for seamless loop) -->
-      <div class="logo"><span class="logo-initials">CS</span><span class="logo-name">China State Construction</span></div>
-      <div class="logo"><span class="logo-initials">CH</span><span class="logo-name">China Harbour</span></div>
-      <div class="logo"><span class="logo-initials">VK</span><span class="logo-name">Vanke</span></div>
-      <div class="logo"><span class="logo-initials">CS</span><span class="logo-name">China State Construction</span></div>
-      <div class="logo"><span class="logo-initials">CH</span><span class="logo-name">China Harbour</span></div>
-      <div class="logo"><span class="logo-initials">VK</span><span class="logo-name">Vanke</span></div>
-    </div>
-    <div class="marquee-fade"></div>
-  </div>
-</section>
-
-<!-- =============== PORTAL — New York =============== -->
-<section class="portal" aria-label="Contact">
-  <img src="/images/new-york-dusk.jpg" alt="New York skyline at dusk" loading="lazy" decoding="async" />
-  <div class="portal-overlay"></div>
-  <div class="portal-body">
-    <h2 class="portal-title">
-      Start with <em>an email.</em>
-    </h2>
-    <a class="cta-solid" href="#contact">
-      Write to us <span aria-hidden="true">→</span>
-    </a>
   </div>
 </section>
 
-<!-- =============== CONTACT =============== -->
-<section id="contact" class="contact">
-  <div class="grid-12">
-    <div class="kicker-col dark">
-      <div class="kicker-rule">§ 05 · Contact</div>
+<!-- =============== 04 MARKETS =============== -->
+<section id="markets" class="credits" aria-labelledby="markets-title">
+  <div class="wrap credits-wrap">
+    <div class="credits-head">
+      <p class="kicker kicker-dark"><span class="kicker-n">04</span> Markets</p>
+      <h2 id="markets-title" class="display reveal">The markets <em>we serve.</em></h2>
+      <p class="credits-note reveal">Representative firms in the markets we serve — across construction, technology and manufacturing. Names are shown for context only; they do not imply endorsement, partnership or affiliation.</p>
     </div>
-    <div class="contact-invitation">
-      <p>Tell us what you're working on. Introductions are welcome; a short email works too. We reply within two business days.</p>
+    <div class="credits-roll" data-roll>
+      <dl class="roll">
+        <div class="roll-row"><dt>Construction</dt><dd>China State Construction</dd></div>
+        <div class="roll-row"><dt>Ports &amp; marine works</dt><dd>China Harbour</dd></div>
+        <div class="roll-row"><dt>Real estate</dt><dd>Vanke</dd></div>
+        <div class="roll-row roll-gap"><dt>Sectors we cover</dt><dd>Real estate &amp; construction<br />Artificial intelligence<br />Advanced manufacturing</dd></div>
+        <div class="roll-row"><dt>Corridor</dt><dd>Dubai · the GCC · Mainland China</dd></div>
+      </dl>
+    </div>
+  </div>
+</section>
+
+<!-- =============== 05 CONTACT =============== -->
+<section id="contact" class="contact" aria-labelledby="contact-title">
+  <div class="contact-plate" aria-hidden="true">
+    <img src="/film/stills/stone.webp" alt="" width="2400" height="1350" loading="lazy" decoding="async" />
+  </div>
+  <div class="wrap contact-wrap">
+    <p class="kicker kicker-dark"><span class="kicker-n">05</span> Contact</p>
+    <h2 id="contact-title" class="contact-title reveal">Start with <em>an email.</em></h2>
+    <p class="contact-lede reveal">Tell us what you’re working on. Introductions are welcome; a short note works too. We reply within two business days.</p>
+    <div class="contact-actions reveal">
+      <a class="btn-sun" href="mailto:contact@skystone.co">contact@skystone.co <span aria-hidden="true">→</span></a>
+      <button class="btn-ghost" type="button" data-copy="contact@skystone.co">Copy address</button>
+      <span class="copy-status" role="status" aria-live="polite"></span>
     </div>
     <dl class="contact-details">
-      <div class="contact-row">
-        <dt>Correspondence</dt>
-        <dd><a class="contact-email" href="mailto:contact@skystone.co">contact@skystone.co</a></dd>
-      </div>
-      <div class="contact-row">
-        <dt>Office</dt>
-        <dd>
-          Meydan Grandstand, 6th floor
-          <span class="contact-sub">Nad Al Sheba, Dubai, U.A.E.</span>
-        </dd>
-      </div>
-      <div class="contact-row">
-        <dt>Hours</dt>
-        <dd>Sun–Thu · 09:00–18:00 GST</dd>
-      </div>
+      <div><dt>Office</dt><dd>Meydan Grandstand, 6th floor<br />Nad Al Sheba, Dubai, U.A.E.</dd></div>
+      <div><dt>Hours</dt><dd>Sun–Thu · 09:00–18:00 GST<br /><span class="office-status" data-office>&nbsp;</span></dd></div>
+      <div><dt>Languages</dt><dd>English · Mandarin</dd></div>
     </dl>
   </div>
 </section>
 
+</main>
+
 <!-- =============== FOOTER =============== -->
 <footer class="footer">
-  <div class="grid-12 footer-top">
-    <div class="footer-wordmark">
-      <div class="footer-sky">Skystone<span class="ochre">.</span></div>
-      <div class="footer-tag">Partners · China–Gulf advisory · Dubai</div>
+  <div class="wrap footer-wrap">
+    <div class="footer-mark">Skystone<span class="wordmark-sun" aria-hidden="true"></span></div>
+    <p class="footer-line"><em>Investment. Insights. Implementation.</em></p>
+    <p class="footer-disclaimer">This website is for informational purposes only and does not constitute financial, legal, or investment advice. Skystone Partners is not a regulated financial advisor. The firm names displayed on this site are representative of the markets we operate in and do not imply endorsement, partnership, or affiliation.</p>
+    <div class="footer-meta">
+      <span>Skystone Partners · Private China–Gulf advisory · Dubai</span>
+      <span>The film above is drawn live in your browser with WebGL — no video file.</span>
+      <span>© 2024–2026 · <a href="/privacy">Privacy policy</a></span>
     </div>
-    <div class="footer-tag-block">
-      <em class="footer-slogan">Investment. Insights. Implementation.</em>
-      <span>Meydan Grandstand, 6th floor,<br />Nad Al Sheba, Dubai.</span>
-    </div>
-    <div class="footer-legal">
-      © 2024–2026<br />
-      All rights reserved
-    </div>
-  </div>
-  <div class="footer-disclaimer">
-    <p>This website is for informational purposes only and does not constitute financial, legal, or investment advice. Skystone Partners is not a regulated financial advisor. The firm names displayed on this site are representative of the markets we operate in and do not imply endorsement, partnership, or affiliation.</p>
-  </div>
-  <div class="footer-colophon">
-    <span><a href="/privacy">Privacy policy</a></span>
   </div>
 </footer>
 
+<script type="module" src="/film/main.js"></script>
+<script type="module" src="/site.js"></script>
 </body>
 </html>

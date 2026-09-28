@@ -2,7 +2,7 @@
   "name": "skystone.co",
   "private": true,
   "version": "0.1.0",
-  "description": "Skystone Partners — private real estate advisory (Dubai). Static site deployed on Cloudflare Workers.",
+  "description": "Skystone Partners — private China–Gulf advisory (Dubai). Static site with a live WebGL brand film, deployed on Cloudflare Workers.",
   "scripts": {
     "dev": "wrangler dev",
     "deploy": "wrangler deploy"

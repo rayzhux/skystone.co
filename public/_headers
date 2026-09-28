@@ -7,14 +7,26 @@
 /index.html
   Cache-Control: public, max-age=300, must-revalidate
 
-/images/*
+/styles.css
+  Cache-Control: public, max-age=3600, must-revalidate
+
+/site.js
+  Cache-Control: public, max-age=3600, must-revalidate
+
+/film/*
+  Cache-Control: public, max-age=3600, must-revalidate
+
+/film/stills/*
+  Cache-Control: public, max-age=604800
+
+/film/land.png
   Cache-Control: public, max-age=2592000, immutable
 
 /favicon.svg
-  Cache-Control: public, max-age=2592000
+  Cache-Control: public, max-age=604800
 
-/styles.css
-  Cache-Control: public, max-age=3600, must-revalidate
+/apple-touch-icon.png
+  Cache-Control: public, max-age=604800
 
 /privacy
   Cache-Control: public, max-age=3600, must-revalidate

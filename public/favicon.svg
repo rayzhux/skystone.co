@@ -1,5 +1,10 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <rect width="32" height="32" fill="#0E0D08"/>
-  <text x="16" y="24" text-anchor="middle" font-family="'Times New Roman', Georgia, serif" font-weight="400" font-size="26" fill="#EDE8DE" font-style="italic">S</text>
-  <circle cx="23" cy="23.5" r="1.8" fill="#C89A5C"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <radialGradient id="s" cx="0.4" cy="0.4" r="0.6"><stop offset="0" stop-color="#FFC98C"/><stop offset="0.55" stop-color="#F4A862"/><stop offset="1" stop-color="#B8502A"/></radialGradient>
+    <linearGradient id="k" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0C1330"/><stop offset="0.62" stop-color="#2A2B4C"/><stop offset="1" stop-color="#07080D"/></linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="14" fill="url(#k)"/>
+  <rect x="8" y="41.5" width="48" height="1.2" fill="#F4A862" opacity="0.85"/>
+  <text x="29" y="46" text-anchor="middle" font-family="'Bodoni 72', Didot, 'Bodoni Moda', 'Times New Roman', serif" font-size="46" fill="#F3EEE6">S</text>
+  <circle cx="48" cy="41" r="5" fill="url(#s)"/>
 </svg>
