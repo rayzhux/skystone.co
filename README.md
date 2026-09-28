@@ -25,8 +25,9 @@ public/
     sky.js particles.js boxes.js lines.js billboards.js globe.js stone.js post.js
     gl.js math.js       # thin WebGL2 + math helpers
     land.png            # 1-bit land mask for the globe (Natural Earth 1:50m)
-    stills/             # frames rendered from the film, used as the site's imagery
-    poster.jpg og.jpg   # no-WebGL fallback still and social card, also rendered from the film
+    poster.jpg og.jpg   # no-WebGL fallback still and social card, rendered from the film
+  stills/               # frames rendered from the film, used as the site's imagery
+  privacy/index.html    # privacy policy
 wrangler.jsonc          # Cloudflare Worker config
 ```
 
