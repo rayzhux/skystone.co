@@ -296,10 +296,11 @@ export function createDirector({ wordAspect }) {
     const asp = wordAspect('investment');
     const H = 8.5 * Math.min(1, Math.max(0.7, aspect * 1.6));
     const back = 44;
-    // centre-left above the rising stones on wide screens, centred on tall ones
-    const side = -3 + 6 * Math.min(1, Math.max(0, (1.3 - aspect) / 0.8));
+    // centre-left above the rising stones on wide screens; centred, and a little higher, on tall ones
+    const tall = Math.min(1, Math.max(0, (1.3 - aspect) / 0.8));
+    const side = -3 + 6 * tall;
     const bx = FC[0] + side - Math.sin(INV_THETA) * back, bz = FC[2] - Math.cos(INV_THETA) * back;
-    const y = key(t, [[8.5, 15], [10.2, 23, 'outExpo']]);
+    const y = key(t, [[8.5, 15], [10.2, 23, 'outExpo']]) + 3.5 * tall;
     f.billboards.push({
       word: 'investment', model: M.mul(M.T(bx, y, bz), M.RY(INV_THETA), M.S(asp * H, H, 1)),
       color: scale3(COLORS.bone, 1.1), fogCol: PAL.golden.fog, alpha: key(t, [[8.5, 0], [9.0, 1], [11.3, 1], [11.8, 0]]),
