@@ -179,7 +179,7 @@ h1, h2, h3 { font-weight: 600; }
 .eyebrow { margin: 0 0 12px; font-size: 13px; font-weight: 500; letter-spacing: 0.01em; color: var(--paper-72); }
 .hero-title {
   margin: 0;
-  font-size: clamp(21px, 1.8vw, 29px);
+  font-size: clamp(20px, 1.6vw, 26px);
   font-weight: 500;
   line-height: 1.22;
   letter-spacing: -0.02em;
@@ -264,8 +264,9 @@ h1, h2, h3 { font-weight: 600; }
 .ft-count { margin-top: 18px; font-family: var(--mono); font-size: 13px; color: var(--paper-72); }
 .ft-count-n { color: var(--accent); }
 
-.pos-horizon-1 { left: 0; right: 0; top: 25%; text-align: center; }
-.pos-horizon-2 { left: 0; right: 0; top: calc(25% + clamp(46px, 7.4vw, 136px) * 1.04); text-align: center; }
+.pos-horizon-1 { left: 0; right: 0; top: 29.5%; text-align: center; }
+.pos-horizon-2 { left: 0; right: 0; top: calc(29.5% + clamp(46px, 7.4vw, 136px) * 1.04); text-align: center; }
+.ft.pos-horizon-2 { text-shadow: 0 0 30px rgba(11, 12, 16, 0.5), 0 0 8px rgba(11, 12, 16, 0.28); }
 .pos-center { left: 0; right: 0; top: 50%; transform: translateY(-50%); text-align: center; }
 .pos-left { left: var(--pad); top: 50%; transform: translateY(-58%); }
 .pos-sub { right: var(--pad); top: clamp(92px, 12.5vh, 136px); text-align: right; }
