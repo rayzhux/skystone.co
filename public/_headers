@@ -8,13 +8,13 @@
   Cache-Control: public, max-age=300, must-revalidate
 
 /styles.css
-  Cache-Control: public, max-age=3600, must-revalidate
+  Cache-Control: public, max-age=0, must-revalidate
 
 /site.js
-  Cache-Control: public, max-age=3600, must-revalidate
+  Cache-Control: public, max-age=0, must-revalidate
 
 /film/*
-  Cache-Control: public, max-age=3600, must-revalidate
+  Cache-Control: public, max-age=0, must-revalidate
 
 /stills/*
   Cache-Control: public, max-age=604800
