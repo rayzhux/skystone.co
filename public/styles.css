@@ -256,7 +256,11 @@ h1, h2, h3 { font-weight: 600; }
 }
 .is-export .ft-open { visibility: visible; }
 
-.ft-chapter { left: var(--pad); bottom: calc(11vh + 72px); }
+.ft-chapter { left: var(--pad); bottom: calc(11vh + 72px); isolation: isolate; }
+.ft-chapter::before {
+  content: ''; position: absolute; inset: -45% -35% -45% -60%; z-index: -1; pointer-events: none;
+  background: radial-gradient(closest-side, rgba(11, 12, 16, 0.55), rgba(11, 12, 16, 0.25) 55%, rgba(11, 12, 16, 0));
+}
 .is-export .ft-chapter { bottom: 11%; }
 .ft-count { margin-bottom: 0.9em; font-family: var(--mono); font-size: clamp(12px, 0.95vw, 17px); color: var(--paper-72); }
 .ft-count-n { color: var(--accent); }
