@@ -1,0 +1,49 @@
+{
+  "scale": 2,
+  "particles": 1024,
+  "grade": { "grain": 0, "bloom": 0.55, "bloomThreshold": 0.75, "vignette": 0.6, "rays": 0, "ca": 0, "zoomBlur": 0 },
+  "jobs": [
+    {
+      "name": "investment-advisory", "t": 2.9, "size": [1600, 1000], "out": "stills/investment-advisory.webp", "outSize": [1600, 1000],
+      "opts": { "span": 0.35, "samples": 32, "head": 0.7,
+        "camera": { "pos": [6.6, 4.6, 8.6], "target": [0.6, 0.1, 0.2], "fov": 38, "roll": 0.12, "shift": [0, 0] },
+        "field": { "aperture": 5, "focus": 11.4 }, "post": { "exposure": 1.75 } }
+    },
+    {
+      "name": "management-consulting", "t": 4.5, "size": [1600, 1000], "out": "stills/management-consulting.webp", "outSize": [1600, 1000],
+      "opts": { "span": 0.28, "samples": 32, "head": 0.7, "lines": false,
+        "camera": { "pos": [-0.6, 0.9, 11.8], "target": [-1.2, 0.2, 0], "fov": 38, "roll": -0.06, "shift": [0, 0] },
+        "field": { "aperture": 3.5, "focus": 11.8 }, "post": { "exposure": 1.8 } }
+    },
+    {
+      "name": "programme-management", "t": 6.45, "size": [1600, 1000], "out": "stills/programme-management.webp", "outSize": [1600, 1000],
+      "opts": { "span": 0.45, "samples": 32, "head": 0.65,
+        "camera": { "pos": [-8, 5.2, 9.4], "target": [0.4, -0.6, 0], "fov": 38, "roll": 0.05, "shift": [0, 0] },
+        "field": { "aperture": 3.5, "focus": 13 }, "post": { "exposure": 1.7 } }
+    },
+    {
+      "name": "implementation-oversight", "t": 8.55, "size": [1600, 1000], "out": "stills/implementation-oversight.webp", "outSize": [1600, 1000],
+      "opts": { "span": 0.3, "samples": 32, "head": 0.7,
+        "camera": { "pos": [7.2, 5.4, 8.2], "target": [0.5, 0.4, 0.3], "fov": 40, "roll": -0.06, "shift": [0, 0] },
+        "field": { "aperture": 7, "focus": 8.5 }, "post": { "exposure": 1.7 } }
+    },
+    {
+      "name": "strategic-insights", "t": 10.45, "size": [1600, 1000], "out": "stills/strategic-insights.webp", "outSize": [1600, 1000],
+      "opts": { "span": 0.3, "samples": 32, "head": 0.7,
+        "camera": { "pos": [-6.4, 2.3, 8.2], "target": [1.6, -2.0, -1.8], "fov": 40, "roll": 0.04, "shift": [0, 0] },
+        "field": { "aperture": 5, "focus": 11 }, "post": { "exposure": 2.0, "bloom": 0.6, "bloomThreshold": 0.7 } }
+    },
+    {
+      "name": "horizon", "t": 14.0, "size": [1600, 900], "scale": 1.5, "out": "stills/horizon.webp", "outSize": [2400, 1350], "quality": 80,
+      "opts": { "span": 0.2, "samples": 16, "head": 0.7, "camera": { "shift": [0, 0.36] }, "post": { "grain": 0, "fade": 0 }, "keepGrade": true }
+    },
+    {
+      "name": "poster", "t": 13.8, "size": [1920, 1080], "clean": false, "out": "film/poster.jpg", "outSize": [1920, 1080],
+      "opts": { "span": 0.15, "samples": 12, "head": 0.75, "post": { "grain": 0.02 }, "keepGrade": true }
+    },
+    {
+      "name": "og", "t": 13.8, "size": [1200, 630], "clean": false, "out": "film/og.jpg", "outSize": [1200, 630],
+      "opts": { "span": 0.15, "samples": 12, "head": 0.75, "post": { "grain": 0.02 }, "keepGrade": true }
+    }
+  ]
+}

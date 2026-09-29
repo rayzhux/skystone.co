@@ -8,3 +8,4 @@ node_modules/
 .gstack/
 .claude/
 exports/
+tools/*.local.txt
