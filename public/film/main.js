@@ -3,7 +3,7 @@ import { createFilm, detectTier } from './film.js';
 import { createOverlay } from './overlay.js';
 import { CHAPTERS, DURATION } from './director.js';
 
-const POSTER_T = 35.4;
+const POSTER_T = 13.8;
 const params = new URLSearchParams(location.search);
 const EXPORT = params.has('export');
 const reduceMQ = matchMedia('(prefers-reduced-motion: reduce)');
@@ -52,7 +52,8 @@ async function boot() {
   if (params.has('clean')) document.documentElement.classList.add('is-clean');
 
   const fixed = EXPORT ? [+(params.get('w') || 1920), +(params.get('h') || 1080)] : null;
-  const film = await createFilm(canvas, { tier: EXPORT ? 'export' : detectTier(), fixedSize: fixed });
+  const side = params.has('n') ? +params.get('n') : null;
+  const film = await createFilm(canvas, { tier: EXPORT ? 'export' : detectTier(), fixedSize: fixed, side });
   const overlay = createOverlay(overlayRoot);
 
   let t = params.has('t') ? +params.get('t') : 0;
@@ -98,7 +99,7 @@ async function boot() {
     const ci = chapterAt(t);
     if (ci !== lastChapter) {
       lastChapter = ci;
-      chapterEl.textContent = `${String(ci + 1).padStart(2, '0')} · ${CHAPTERS[ci].label}`;
+      chapterEl.textContent = CHAPTERS[ci].label;
       segs.forEach((s, i) => s.classList.toggle('is-now', i === ci));
     }
     if (coordsEl) coordsEl.textContent = 'Skystone Partners · Dubai';
@@ -108,15 +109,14 @@ async function boot() {
       track.setAttribute('aria-valuenow', String(sec));
       track.setAttribute('aria-valuetext', `${sec} seconds, ${CHAPTERS[ci].label}`);
     }
-    // the page title owns the opening; from the first chapter on, the film's own titles take the frame
-    lockup.classList.toggle('is-quiet', t >= 8.2 && t < 39.7);
-    document.documentElement.classList.toggle('film-light', t >= 22 && t < 23.6 && !covered);
+    // the page title stays up through the film and steps aside for the mark at the end
+    lockup.classList.toggle('is-quiet', t >= 12.35 && t < 14.99);
   }
 
-  // compile every pipeline during the calm opening seconds, one shot per frame, so no cut ever hitches
-  const warm = EXPORT ? [] : [6.5, 9.5, 14.5, 18.5, 21.5, 22.5, 25.5, 29.0, 31.8, 34.0];
+  // touch every chapter once during the dark opening second, one per frame, so no cut ever hitches
+  const warm = EXPORT ? [] : [2.4, 4.6, 6.6, 8.6, 10.6, 12.6];
   function draw() {
-    if (warm.length && t < 3.6) film.render(warm.shift());
+    if (warm.length && t < 1.0) film.render(warm.shift());
     const frame = film.render(t);
     overlay.update(t, frame, film);
     if (!EXPORT) updateUI(frame);
@@ -295,6 +295,14 @@ async function boot() {
       seek(sec) {
         t = sec;
         draw();
+        film.gl.finish();
+        return new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(() => r(true))));
+      },
+      // a long-exposure still: many sub-frames summed before the grade
+      still(sec, opts) {
+        t = sec;
+        film.renderStill(sec, opts);
+        overlay.update(sec);
         film.gl.finish();
         return new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(() => r(true))));
       },

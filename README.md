@@ -15,49 +15,46 @@ public/
   styles.css            # Geist type, three colours (ink, paper, one accent), film overlay, sections
   site.js               # nav, reveals, office hours, copy address, process playhead, contact plate
   film/
-    main.js             # boots the reel, player controls, visibility, adaptive resolution
-    film.js             # engine: GL context, renderers, camera rig, render order
-    director.js         # the shot list: film time -> complete frame description
-    overlay.js          # typography + vector layer, keyed to the same clock
+    main.js             # boots the film, player controls, visibility, adaptive resolution
+    film.js             # engine: GL context, renderers, camera, motion blur, long-exposure stills
+    director.js         # the timeline: film time -> complete frame description
+    field.js            # the light field: GPU particles whose positions are pure functions of time
+    backdrop.js         # the void the film plays in
+    lines.js            # hairlines that draw on (horizon, orbits, lattice, strands, signal)
+    post.js             # bloom, light shafts, grade; HDR accumulation for stills
+    overlay.js          # titles and the mark, keyed to the same clock
     audio.js            # the score: WebAudio synthesis, live + offline render
-    shapes.js           # particle target shapes (built in shapes-worker.js)
-    world.js            # places, the monolith field, the arch, the landscape, the stone
-    parts.js            # instanced stone parts (blocks, voussoirs, keystone), fake bevels, materials
-    terrain.js          # dunes and the contour landscape
-    shadow.js           # sun shadow map (PCF), fitted per shot
-    sky.js particles.js lines.js billboards.js globe.js stone.js post.js
     gl.js math.js       # thin WebGL2 + math helpers
-    land.png            # 1-bit land mask for the globe (Natural Earth 1:50m)
     poster.jpg og.jpg   # no-WebGL fallback still and social card, rendered from the film
-  stills/               # frames rendered from the film, used as the site's imagery
+  stills/               # long-exposure renders of the film's forms, used as the site's imagery
   privacy/index.html    # privacy policy
+  404.html              # not-found page
 wrangler.jsonc          # Cloudflare Worker config
 ```
 
 ## How the film works
 
-One clock drives everything. `director.evaluate(t)` is a pure function from film time to a frame
-(camera, sky, terrain, particle morph, stone parts, shadows, lines, words-in-the-world, stone, post), and `overlay.update(t)`
-does the same for the DOM typography. That is what makes the reel pausable, scrubbable, loopable and
-exportable frame-exact.
+Fifteen seconds at 120 BPM, abstract forms only: a point of light draws a horizon; then one form per
+discipline, two seconds each (a spiral galaxy for Investment Advisory, tangled threads combed straight for
+Management Consulting, seven orbits falling into one plane for Programme Management, a lattice locking
+together under a scan for Implementation & Oversight, a noise field resolving into a signal for Strategic
+Insights); everything gathers back into the point and the horizon returns under the mark.
 
-- 65k GPU particles morph between shapes stored in a float texture (desert → globe → landscape →
-  dust bursts → vortex → a single point → the stone).
-- Chapters: Horizon, Reach (globe network from Dubai), Investment (seven monoliths rising),
-  Insights (a contour landscape drawing itself at night), Implementation (an arch assembled stone by
-  stone until the keystone locks), what we do, four stages, Skystone.
-- Stone is instanced geometry with bevels, polished basalt / honed travertine and a real shadow map.
-- Post: MSAA, dual-filter bloom, god rays from the sun, exponential tone map, split-tone grade, grain,
-  whip/zoom blur.
+One clock drives everything. `director.evaluate(t)` is a pure function from film time to a frame (camera,
+particle forms and morph, lines, backdrop, grade), and `overlay.update(t)` does the same for the DOM
+typography. That is what makes the film pausable, scrubbable, loopable and exportable frame-exact.
+
+- Up to a million particles. Each frame the GPU evaluates every particle's position twice, now and a
+  shutter-interval earlier, and draws it as a motion-blurred, depth-of-field streak of light.
+- Stills are long exposures: many sub-frames summed in HDR before the grade, from a camera of their own.
 - Quality tiers by device, plus adaptive resolution that sheds pixels when frames run long.
 - `prefers-reduced-motion`: no autoplay; the end card holds as a still with a Play button.
 - No WebGL2: `film/poster.jpg` stands in and the player is hidden.
-- Sound only after a click; the score follows the film clock (or the film follows the audio clock
-  while sound is on).
+- Sound only after a click; the film follows the audio clock while sound is on.
 
-Dev helpers: `/?t=12.5&pause` opens on a given frame; `K` play/pause, `J`/`L` ±5 s, `M` sound.
-`/?export&w=1920&h=1080` exposes `window.__film.seek(t)` and `window.__film.audio()` for frame-exact
-capture (hides all page chrome).
+Dev helpers: `/?t=6.5&pause` opens on a given frame; `K` play/pause, `J`/`L` ±5 s, `M` sound.
+`/?export&w=1920&h=1080&n=768` exposes `window.__film.seek(t)`, `window.__film.still(t, opts)` and
+`window.__film.audio()` for frame-exact capture (hides all page chrome; `n` sets particles per side).
 
 ## Local development
 

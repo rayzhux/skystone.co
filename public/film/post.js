@@ -1,6 +1,7 @@
-// Post: MSAA resolve, a dual-filter bloom chain, then a single grade pass (tone map, split-tone,
-// chromatic aberration, directional blur for whip moves, vignette, grain, flash, fade).
-import { createProgram, createTarget, createMSTarget, deleteTarget, FULLSCREEN_VS } from './gl.js';
+// Post: a dual-filter bloom chain, light shafts, then a single grade pass (tone map, split-tone, chromatic
+// aberration, zoom and directional blur, vignette, grain, flash, fade). Stills can accumulate many sub-frames
+// into one HDR exposure before the grade.
+import { createProgram, createTarget, deleteTarget, FULLSCREEN_VS } from './gl.js';
 
 const DOWN_FS = `#version 300 es
 precision highp float;
@@ -64,6 +65,14 @@ void main(){
   }
   o = vec4(acc / 14.0, 1.0);
 }`;
+
+const COPY_FS = `#version 300 es
+precision highp float;
+in vec2 vUv;
+uniform sampler2D uTex;
+uniform float uWeight;
+out vec4 o;
+void main(){ o = vec4(texture(uTex, vUv).rgb * uWeight, 1.0); }`;
 
 const GRADE_FS = `#version 300 es
 precision highp float;
@@ -132,36 +141,31 @@ export function createPost(gl) {
   const up = createProgram(gl, FULLSCREEN_VS, UP_FS, 'bloom-up');
   const grade = createProgram(gl, FULLSCREEN_VS, GRADE_FS, 'grade');
   const rays = createProgram(gl, FULLSCREEN_VS, RAYS_FS, 'rays');
-  let raysT = null;
+  const copy = createProgram(gl, FULLSCREEN_VS, COPY_FS, 'copy');
   const vao = gl.createVertexArray();
   const hdr = gl.ext.floatRT || gl.ext.halfRT;
-  let ms = null, resolved = null, chain = [];
-  let W = 0, H = 0, samples = 0;
+  let scene = null, accum = null, raysT = null, chain = [];
+  let W = 0, H = 0;
 
-  function resize(w, h, wantSamples) {
-    if (w === W && h === H && wantSamples === samples && ms) return;
+  const make = (w, h) => {
+    let t = createTarget(gl, w, h, hdr);
+    if (!t.ok) t = createTarget(gl, w, h, false);
+    return t;
+  };
+
+  function resize(w, h) {
+    if (w === W && h === H && scene) return;
     W = w; H = h;
-    deleteTarget(gl, ms);
-    deleteTarget(gl, resolved);
-    chain.forEach((t) => deleteTarget(gl, t));
-    const maxS = gl.getParameter(gl.MAX_SAMPLES) || 0;
-    samples = Math.min(wantSamples, maxS);
-    ms = createMSTarget(gl, w, h, hdr, samples);
-    if (!ms.ok && hdr) ms = createMSTarget(gl, w, h, false, samples);
-    if (!ms.ok) { samples = 0; ms = createMSTarget(gl, w, h, false, 0); }
-    resolved = createTarget(gl, w, h, hdr);
-    if (!resolved.ok) resolved = createTarget(gl, w, h, false);
-    deleteTarget(gl, raysT);
-    raysT = createTarget(gl, Math.max(1, w >> 2), Math.max(1, h >> 2), hdr);
-    if (!raysT.ok) raysT = createTarget(gl, Math.max(1, w >> 2), Math.max(1, h >> 2), false);
+    [scene, accum, raysT, ...chain].forEach((t) => deleteTarget(gl, t));
+    accum = null;
+    scene = make(w, h);
+    raysT = make(Math.max(1, w >> 2), Math.max(1, h >> 2));
     chain = [];
     let cw = w, ch = h;
     for (let i = 0; i < 5; i++) {
       cw = Math.max(1, cw >> 1);
       ch = Math.max(1, ch >> 1);
-      let t = createTarget(gl, cw, ch, hdr);
-      if (!t.ok) t = createTarget(gl, cw, ch, false);
-      chain.push(t);
+      chain.push(make(cw, ch));
     }
   }
 
@@ -174,50 +178,59 @@ export function createPost(gl) {
     gl.drawArrays(gl.TRIANGLES, 0, 3);
   }
 
+  function finish(frame, src) {
+    const P = frame.post;
+    gl.disable(gl.DEPTH_TEST);
+    gl.disable(gl.BLEND);
+    let s = src;
+    chain.forEach((t, i) => {
+      pass(down, t, { uTex: s.tex, uTexel: [1 / s.width, 1 / s.height], uThreshold: P.bloomThreshold, uPrefilter: i === 0 ? 1 : 0 });
+      s = t;
+    });
+    const R = P.rays || 0;
+    if (R > 0.001 && P.sunUv) pass(rays, raysT, { uTex: chain[1].tex, uSun: P.sunUv, uDecay: P.raysDecay || 0.955, uDensity: 0.92 });
+    gl.enable(gl.BLEND);
+    gl.blendFunc(gl.ONE, gl.ONE);
+    for (let i = chain.length - 1; i > 0; i--) {
+      const a = chain[i], b = chain[i - 1];
+      pass(up, b, { uTex: a.tex, uTexel: [0.5 / a.width, 0.5 / a.height] });
+    }
+    gl.disable(gl.BLEND);
+    pass(grade, null, {
+      uScene: src.tex, uBloom: chain[0].tex, uRays: raysT.tex, uRaysAmt: (R > 0.001 && P.sunUv) ? R : 0,
+      uRes: [gl.drawingBufferWidth, gl.drawingBufferHeight],
+      uBloomAmt: P.bloom, uExposure: P.exposure, uCA: P.ca, uVignette: P.vignette, uGrain: P.grain,
+      uTime: frame.time, uFlash: P.flash, uFade: P.fade, uBlurAmt: P.blur, uBlurDir: P.blurDir,
+      uZoomBlur: P.zoomBlur, uFlashCol: P.flashCol, uShadowTint: P.shadowTint, uHighTint: P.highTint,
+      uLift: P.lift, uSaturation: P.saturation,
+    });
+  }
+
   return {
-    get samples() { return samples; },
     resize,
     begin() {
-      gl.bindFramebuffer(gl.FRAMEBUFFER, ms.fb);
+      gl.bindFramebuffer(gl.FRAMEBUFFER, scene.fb);
       gl.viewport(0, 0, W, H);
       gl.clearColor(0, 0, 0, 1);
-      gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+      gl.clear(gl.COLOR_BUFFER_BIT);
     },
-    end(frame) {
-      const P = frame.post;
-      gl.disable(gl.DEPTH_TEST);
-      gl.disable(gl.BLEND);
-      gl.bindFramebuffer(gl.READ_FRAMEBUFFER, ms.fb);
-      gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, resolved.fb);
-      gl.blitFramebuffer(0, 0, W, H, 0, 0, W, H, gl.COLOR_BUFFER_BIT, gl.NEAREST);
-      gl.bindFramebuffer(gl.READ_FRAMEBUFFER, null);
-      gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, null);
-      // bloom: down chain with prefilter on the first step, then additive up chain
-      let src = resolved;
-      chain.forEach((t, i) => {
-        pass(down, t, { uTex: src.tex, uTexel: [1 / src.width, 1 / src.height], uThreshold: P.bloomThreshold, uPrefilter: i === 0 ? 1 : 0 });
-        src = t;
-      });
-      // light shafts from the thresholded quarter-res image, before the up-chain adds into it
-      const R = P.rays || 0;
-      if (R > 0.001 && P.sunUv) {
-        pass(rays, raysT, { uTex: chain[1].tex, uSun: P.sunUv, uDecay: 0.955, uDensity: 0.92 });
-      }
+    end(frame) { finish(frame, scene); },
+    // long exposures for stills: sum (or max) many rendered sub-frames, then grade once
+    accumReset() {
+      if (!accum) accum = make(W, H);
+      gl.bindFramebuffer(gl.FRAMEBUFFER, accum.fb);
+      gl.viewport(0, 0, W, H);
+      gl.clearColor(0, 0, 0, 1);
+      gl.clear(gl.COLOR_BUFFER_BIT);
+    },
+    accumAdd(weight, mode = 'add') {
       gl.enable(gl.BLEND);
+      gl.blendEquation(mode === 'max' ? gl.MAX : gl.FUNC_ADD);
       gl.blendFunc(gl.ONE, gl.ONE);
-      for (let i = chain.length - 1; i > 0; i--) {
-        const s = chain[i], d = chain[i - 1];
-        pass(up, d, { uTex: s.tex, uTexel: [0.5 / s.width, 0.5 / s.height] });
-      }
+      pass(copy, accum, { uTex: scene.tex, uWeight: weight });
+      gl.blendEquation(gl.FUNC_ADD);
       gl.disable(gl.BLEND);
-      pass(grade, null, {
-        uScene: resolved.tex, uBloom: chain[0].tex, uRays: raysT.tex, uRaysAmt: (P.rays > 0.001 && P.sunUv) ? P.rays : 0,
-        uRes: [gl.drawingBufferWidth, gl.drawingBufferHeight],
-        uBloomAmt: P.bloom, uExposure: P.exposure, uCA: P.ca, uVignette: P.vignette, uGrain: P.grain,
-        uTime: frame.time, uFlash: P.flash, uFade: P.fade, uBlurAmt: P.blur, uBlurDir: P.blurDir,
-        uZoomBlur: P.zoomBlur, uFlashCol: P.flashCol, uShadowTint: P.shadowTint, uHighTint: P.highTint,
-        uLift: P.lift, uSaturation: P.saturation,
-      });
     },
+    endAccum(frame) { finish(frame, accum); },
   };
 }

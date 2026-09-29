@@ -46,7 +46,7 @@ em { font-style: normal; }
 h1, h2, h3 { font-weight: 600; }
 ::selection { background: var(--accent); color: var(--ink); }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 2px; }
-.practice :focus-visible, .process :focus-visible, .film-light .nav :focus-visible { outline-color: var(--ink); }
+.practice :focus-visible, .process :focus-visible { outline-color: var(--ink); }
 
 .sr-only {
   position: absolute !important; width: 1px; height: 1px; padding: 0; margin: -1px;
@@ -130,11 +130,6 @@ h1, h2, h3 { font-weight: 600; }
 .nav-cta span { transition: transform 400ms var(--ease); }
 .nav-cta:hover span { transform: translateX(4px); }
 .nav-menu { display: none; }
-.film-light .nav:not(.is-solid) .wordmark,
-.film-light .nav:not(.is-solid) .nav-links a,
-.film-light .nav:not(.is-solid) .nav-cta,
-.film-light .nav:not(.is-solid) .nav-menu { color: var(--ink); border-color: var(--ink-14); }
-.film-light .nav:not(.is-solid) .nav-menu { background: transparent; }
 
 /* ---------------------------------------------------------------- the stage (hero sticks, practice slides over) */
 .stage { position: relative; }
@@ -171,7 +166,7 @@ h1, h2, h3 { font-weight: 600; }
   max-width: min(440px, 40vw);
   transition: opacity 700ms var(--ease);
 }
-.hero-lockup.is-quiet, .film-light .hero-lockup { opacity: 0; }
+.hero-lockup.is-quiet { opacity: 0; }
 .hero-lockup::before {
   content: ''; position: absolute; inset: -40px -60px -40px -80px; z-index: -1; pointer-events: none;
   background: radial-gradient(closest-side, rgba(11, 12, 16, 0.5), rgba(11, 12, 16, 0.22) 60%, rgba(11, 12, 16, 0));
@@ -248,85 +243,50 @@ h1, h2, h3 { font-weight: 600; }
 .pl-dur { color: var(--paper-56); }
 
 /* ---------------------------------------------------------------- film typography (overlay) */
-.film-titles, .film-cards { position: absolute; inset: 0; }
-.ft { position: absolute; color: var(--paper); will-change: transform; text-shadow: 0 0 40px rgba(11, 12, 16, 0.34); }
-.ft-plain { white-space: normal; }
-.fl-line { display: block; overflow: hidden; padding: 0.08em 0.06em 0.1em; margin: -0.08em -0.06em -0.1em; }
+.film-titles { position: absolute; inset: 0; }
+.ft { position: absolute; color: var(--paper); text-shadow: 0 0 28px rgba(11, 12, 16, 0.5); }
+.fl-line { display: block; overflow: hidden; padding: 0.08em 0.06em 0.14em; margin: -0.08em -0.06em -0.14em; }
 .fl-inner { display: inline-block; white-space: nowrap; }
 .fl-ch { display: inline-block; will-change: transform; }
-.t-display { font-weight: 600; font-size: clamp(46px, 7.4vw, 136px); line-height: 1; letter-spacing: -0.05em; }
-.t-light { font-weight: 300; letter-spacing: -0.045em; }
-.t-l { font-size: clamp(34px, 5vw, 90px); line-height: 1.04; text-shadow: 0 0 36px rgba(11, 12, 16, 0.7), 0 0 12px rgba(11, 12, 16, 0.45); }
-.t-caps { text-transform: uppercase; }
-.t-caps-xl { font-weight: 800; font-size: clamp(36px, 8.2vw, 156px); line-height: 0.9; letter-spacing: -0.035em; }
-.t-sub { font-size: clamp(16px, 1.35vw, 21px); line-height: 1.4; max-width: 30ch; font-weight: 400; letter-spacing: -0.01em; }
-.ft-kicker { margin-bottom: 10px; font-size: 13px; font-weight: 600; letter-spacing: 0.02em; color: var(--accent); }
-.ft-count { margin-top: 18px; font-family: var(--mono); font-size: 13px; color: var(--paper-72); }
+
+/* the exported film opens on the name; on the page, the page title does that job */
+.ft-open {
+  left: 0; right: 0; top: 57%; text-align: center; visibility: hidden;
+  font-size: clamp(12px, 0.95vw, 18px); font-weight: 500; text-transform: uppercase; color: var(--paper-72);
+}
+.is-export .ft-open { visibility: visible; }
+
+.ft-chapter { left: var(--pad); bottom: calc(11vh + 72px); }
+.is-export .ft-chapter { bottom: 11%; }
+.ft-count { margin-bottom: 0.9em; font-family: var(--mono); font-size: clamp(12px, 0.95vw, 17px); color: var(--paper-72); }
 .ft-count-n { color: var(--accent); }
-
-.pos-horizon-1 { left: 0; right: 0; top: 29.5%; text-align: center; }
-.pos-horizon-2 { left: 0; right: 0; top: calc(29.5% + clamp(46px, 7.4vw, 136px) * 1.04); text-align: center; }
-.ft.pos-horizon-2 { text-shadow: 0 0 30px rgba(11, 12, 16, 0.5), 0 0 8px rgba(11, 12, 16, 0.28); }
-.pos-center { left: 0; right: 0; top: 50%; transform: translateY(-50%); text-align: center; }
-.pos-left { left: var(--pad); top: 50%; transform: translateY(-58%); }
-.pos-sub { right: var(--pad); top: clamp(92px, 12.5vh, 136px); text-align: right; }
-.pos-sub .ft-plain { margin-left: auto; }
-.pos-impl { left: var(--pad); bottom: 22%; }
-.pos-stack-1, .pos-stack-2, .pos-stack-3 { left: 0; right: 0; text-align: center; }
-.pos-stack-1 { top: 27%; }
-.pos-stack-2 { top: calc(27% + clamp(34px, 5vw, 90px) * 1.1); }
-.pos-stack-3 { top: calc(27% + clamp(34px, 5vw, 90px) * 2.2); }
-
-.anchor-label { position: absolute; left: 0; top: 0; translate: 18px -50%; white-space: nowrap; text-shadow: 0 0 14px rgba(11, 12, 16, 0.8); }
-.al-name { font-size: 13px; font-weight: 600; letter-spacing: 0.01em; }
-.al-hub .al-name { font-size: 16px; }
-.al-coord { font-family: var(--mono); font-size: 11px; color: var(--paper-72); }
-.callout {
-  position: absolute; left: 0; top: 0; width: max-content; max-width: 280px;
-  translate: -50% 84px;
-  display: flex; flex-direction: column; align-items: center; gap: 4px; text-align: center;
-  text-shadow: 0 0 16px rgba(11, 12, 16, 0.85);
+.t-ch { font-size: clamp(34px, 4.6vw, 92px); line-height: 0.98; letter-spacing: -0.045em; }
+.t-ch-a { font-weight: 600; }
+.t-ch-b { font-weight: 300; color: var(--paper-88); }
+.ft-rule {
+  display: block; width: clamp(140px, 16vw, 300px); height: 1px; margin-top: clamp(16px, 1.6vw, 26px);
+  background: var(--accent); transform-origin: 0 50%; transform: scaleX(0);
 }
-.callout-name { font-size: 15px; font-weight: 600; letter-spacing: 0.01em; }
-.callout-note { font-size: 14px; line-height: 1.35; color: var(--paper-88); max-width: 24ch; }
 
-.fcard { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; text-align: center; flex-direction: column; }
-.card-paper { background: var(--paper); color: var(--ink); }
-.card-accent { background: var(--accent); color: var(--ink); }
-.card-ink { background: var(--ink); color: var(--paper); }
-.fcard .ft-count { position: absolute; left: var(--pad); bottom: 22%; color: inherit; opacity: 0.72; }
-.fcard .ft-count-n { color: inherit; }
-.fcard-text { will-change: transform; }
-
-.stages { position: absolute; inset: 0; isolation: isolate; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding-bottom: 8%; }
-.stages::before, .film-titles .pos-stack-1::before {
-  content: ''; position: absolute; left: 50%; top: 46%; width: min(1100px, 110vw); height: min(640px, 80vh); transform: translate(-50%, -50%);
-  background: radial-gradient(closest-side, rgba(11, 12, 16, 0.62), rgba(11, 12, 16, 0.28) 55%, rgba(11, 12, 16, 0)); pointer-events: none; z-index: -1;
-}
-.film-titles .pos-stack-1::before { top: 110%; }
-.stage-kicker { position: absolute; right: var(--pad); top: clamp(92px, 12.5vh, 136px); font-size: 13px; font-weight: 600; letter-spacing: 0.02em; color: var(--accent); }
-.stage-num, .stage-name, .stage-note { will-change: transform, opacity; }
-.stage-num { font-weight: 300; font-size: clamp(104px, 17vw, 300px); line-height: 0.82; letter-spacing: -0.02em; text-shadow: 0 0 36px rgba(11, 12, 16, 0.5); }
-.stage-name { margin-top: 26px; font-size: clamp(18px, 1.7vw, 26px); font-weight: 600; letter-spacing: -0.02em; text-shadow: 0 0 24px rgba(11, 12, 16, 0.9); }
-.stage-note { margin-top: 6px; font-size: clamp(15px, 1.25vw, 19px); color: var(--paper-88); text-shadow: 0 0 24px rgba(11, 12, 16, 0.9); }
-
-.disc-rail { position: absolute; right: var(--pad); top: clamp(92px, 14vh, 140px); display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
-.disc-rail-label { font-size: 13px; font-weight: 600; letter-spacing: 0.01em; }
-.disc-rail-bar { display: flex; gap: 4px; }
-.disc-rail-bar i { width: 22px; height: 2px; background: var(--paper-24); }
-.disc-rail-bar i.on { background: var(--accent); }
-.disc-rail.on-card { color: var(--ink); }
-.disc-rail.on-card .disc-rail-bar i { background: var(--ink-14); }
-.disc-rail.on-card .disc-rail-bar i.on { background: var(--ink); }
-
-.endcard { position: absolute; left: 0; right: 0; bottom: 19%; text-align: center; }
+.endcard { position: absolute; left: 0; right: 0; top: 58%; text-align: center; }
 .endcard-mark {
   display: inline-flex; align-items: baseline; justify-content: center; gap: 0.05em;
-  font-weight: 600; font-size: clamp(62px, 11.5vw, 216px); line-height: 0.95; letter-spacing: -0.055em;
+  font-weight: 600; font-size: clamp(54px, 8.4vw, 168px); line-height: 0.95; letter-spacing: -0.055em;
 }
 .endcard-sun { width: 0.12em; height: 0.12em; border-radius: 50%; background: var(--accent); transform: scale(0); }
-.endcard-line { margin-top: 0.5em; font-size: clamp(18px, 1.9vw, 30px); font-weight: 400; letter-spacing: -0.02em; color: var(--paper-88); }
-.endcard-meta { margin-top: 12px; font-size: 13px; font-weight: 600; letter-spacing: 0.02em; color: var(--accent); }
+.endcard-line { margin-top: 0.5em; font-size: clamp(16px, 1.6vw, 28px); font-weight: 400; letter-spacing: -0.02em; color: var(--paper-88); }
+.endcard-meta { margin-top: 12px; font-size: clamp(12px, 0.9vw, 16px); font-weight: 600; letter-spacing: 0.02em; color: var(--accent); }
+
+/* tall frames (phones, the vertical cut): the film's type steps up */
+@media (max-aspect-ratio: 4/5) {
+  .t-ch { font-size: clamp(34px, 9vw, 104px); }
+  .ft-count { font-size: clamp(12px, 2.2vw, 24px); }
+  .ft-rule { width: clamp(120px, 34vw, 380px); }
+  .endcard-mark { font-size: clamp(54px, 16vw, 176px); }
+  .endcard-line { font-size: clamp(15px, 3.4vw, 38px); }
+  .endcard-meta { font-size: clamp(12px, 2.2vw, 24px); }
+  .ft-open { font-size: clamp(12px, 2vw, 22px); }
+}
 
 /* ---------------------------------------------------------------- 01 practice (paper, slides over the film) */
 .practice {
@@ -414,11 +374,12 @@ h1, h2, h3 { font-weight: 600; }
 .client-list p { margin: 10px 0 0; font-size: 16px; color: var(--paper-72); max-width: 44ch; }
 
 /* ---------------------------------------------------------------- 05 contact */
-.contact { position: relative; z-index: 2; background: var(--ink); min-height: 100svh; display: flex; align-items: flex-end; padding: clamp(120px, 16vw, 240px) 0 clamp(64px, 7vw, 110px); overflow: hidden; }
-.contact-plate { position: absolute; inset: 0; }
-.contact-plate img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 40%; transform: scale(calc(1.08 - var(--plate, 0) * 0.08)); will-change: transform; }
-.contact-plate::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(11, 12, 16, 0.55) 0%, rgba(11, 12, 16, 0.08) 30%, rgba(11, 12, 16, 0.55) 60%, rgba(11, 12, 16, 0.94) 100%); }
-.contact-wrap { position: relative; }
+.contact { position: relative; z-index: 2; background: var(--ink); padding: 0 0 clamp(64px, 7vw, 110px); overflow: hidden; }
+/* the horizon gets its own band above the words, so no line of light ever runs behind text */
+.contact-plate { position: relative; height: clamp(240px, 38vw, 560px); overflow: hidden; }
+.contact-plate img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 35%; transform: scale(calc(1.08 - var(--plate, 0) * 0.08)); will-change: transform; }
+.contact-plate::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(11, 12, 16, 0.6) 0%, rgba(11, 12, 16, 0) 22%, rgba(11, 12, 16, 0) 52%, var(--ink) 100%); }
+.contact-wrap { position: relative; margin-top: calc(clamp(240px, 38vw, 560px) * -0.1); }
 .contact-title { margin: 0; font-size: clamp(52px, 9vw, 168px); font-weight: 600; line-height: 0.95; letter-spacing: -0.055em; }
 .contact-title em { font-weight: 300; color: var(--accent); }
 .contact-lede { margin: 26px 0 0; max-width: 44ch; font-size: clamp(17px, 1.4vw, 20px); color: var(--paper-88); }
@@ -519,24 +480,15 @@ h1, h2, h3 { font-weight: 600; }
   .wordmark-name { font-size: 21px; }
   .hero-lockup { top: 72px; max-width: none; right: var(--pad); }
   .hero-title { font-size: 20px; }
-  .pos-sub, .stage-kicker { display: none !important; }
   .eyebrow { font-size: 12.5px; }
   .player { grid-template-columns: auto auto 1fr; gap: 10px; padding-bottom: calc(14px + env(safe-area-inset-bottom)); }
   .pl-time { display: none; }
   .pl-sound-label { display: none; }
   .pl-sound { padding: 0 13px; }
   .pl-chapters i span { display: none; }
-  .t-display { font-size: clamp(42px, 12.4vw, 84px); }
-  .pos-horizon-1 { top: 30%; }
-  .pos-horizon-2 { top: calc(30% + clamp(42px, 12.4vw, 84px) * 1.04); }
-  .t-caps-xl { font-size: clamp(30px, 9.4vw, 72px); }
-  .t-l { font-size: clamp(34px, 10vw, 60px); }
-  .pos-stack-2 { top: calc(27% + clamp(34px, 10vw, 60px) * 1.1); }
-  .pos-stack-3 { top: calc(27% + clamp(34px, 10vw, 60px) * 2.2); }
-  .pos-impl { bottom: 30%; }
-  .disc-rail { top: 96px; }
-  .endcard { bottom: 30%; }
-  .endcard-mark { font-size: clamp(56px, 18vw, 110px); }
+  .t-ch { font-size: clamp(34px, 10vw, 52px); }
+  .ft-chapter { bottom: calc(9vh + 64px); }
+  .endcard-mark { font-size: clamp(54px, 17vw, 104px); }
   .practice-cols { grid-template-columns: 1fr; gap: 18px; }
   .facts { grid-template-columns: 1fr 1fr; }
   .fact { padding-right: 12px; }
@@ -577,4 +529,4 @@ h1, h2, h3 { font-weight: 600; }
 .is-export .hero { position: fixed; inset: 0; height: 100vh; min-height: 0; }
 .is-export .film { transform: none; border-radius: 0; }
 .is-export .film-veil { display: none; }
-.is-clean .film-titles, .is-clean .film-cards, .is-clean .film-vector { display: none !important; }
+.is-clean .film-titles { display: none !important; }
